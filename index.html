@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Apollo 11 — Interactive Journey</title>
+    <meta
+      name="description"
+      content="A scroll-driven 3D replay of the Apollo 11 mission, from liftoff to splashdown."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --space: #05070c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--space);
+        color: #e8e8ea;
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        /* The scene is a fixed backdrop; the page scrolls past it. */
+        overscroll-behavior-y: none;
+      }
+
+      /*
+       * A fixed canvas with a tall spacer behind it, rather than position:sticky.
+       * Sticky pinning is the usual source of iOS Safari scroll bugs and there is
+       * no layout reason to need it here.
+       */
+      #scene {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100dvh;
+        display: block;
+        z-index: 0;
+      }
+
+      @supports not (height: 100dvh) {
+        #scene {
+          height: 100vh;
+        }
+      }
+
+      /* Provides the scroll length. Height is set from SCROLL_TRACK_VH. */
+      #scroll-track {
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="scene" aria-label="Apollo 11 mission, rendered in 3D" role="img"></canvas>
+
+    <h1 class="visually-hidden">Apollo 11 — Interactive Journey</h1>
+    <p class="visually-hidden">
+      Phase 0 foundation build. Scroll to drive the timeline forward and backward.
+    </p>
+
+    <div id="scroll-track"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
