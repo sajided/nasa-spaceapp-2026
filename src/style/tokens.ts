@@ -35,6 +35,18 @@ export const materials = {
     metalness: 0.4,
     roughness: 0.6,
   },
+  /** The Command Module's aluminised Mylar skin: the brightest thing in frame. */
+  mylar: {
+    color: new Color('#CDD0D4'),
+    metalness: 0.92,
+    roughness: 0.2,
+  },
+  /** The Service Module's bare aluminium, under its radiator paint. */
+  aluminium: {
+    color: new Color('#C4C6C8'),
+    metalness: 0.78,
+    roughness: 0.34,
+  },
 } as const;
 
 export const lighting = {
