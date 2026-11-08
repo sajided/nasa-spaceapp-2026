@@ -1,95 +1,89 @@
-import { storyScenes } from "@/data/script";
-import Scene from "@/components/Scene";
-import Timeline from "@/components/Timeline";
-import DialogueBubble from "@/components/DialogueBubble";
+"use client";
 
-// Visual components
-import EarthMoonView from "@/components/visuals/EarthMoonView";
-import RocketLaunch from "@/components/visuals/RocketLaunch";
-import DeepSpaceDance from "@/components/visuals/DeepSpaceDance";
-import MoonOrbit from "@/components/visuals/MoonOrbit";
-import LunarLanding from "@/components/visuals/LunarLanding";
-import ReturnHome from "@/components/visuals/ReturnHome";
-import MuseumOfCourage from "@/components/visuals/MuseumOfCourage";
+import { useState, useCallback } from "react";
+import { storySteps } from "@/data/script";
+import SpaceCanvas from "@/components/SpaceCanvas";
+import PlanetDialogueBubble from "@/components/PlanetDialogueBubble";
+import StoryHUD from "@/components/StoryHUD";
 
-import styles from "./page.module.css";
+interface PlanetCoords {
+  x: number;
+  y: number;
+  visible: boolean;
+}
 
 export default function Home() {
-  // Mapping each scene ID to its corresponding visual component
-  const sceneVisuals: Record<number, React.ReactNode> = {
-    1: <EarthMoonView />,
-    2: <RocketLaunch />,
-    3: <DeepSpaceDance />,
-    4: <MoonOrbit />,
-    5: <LunarLanding />,
-    6: <ReturnHome />,
-    7: <MuseumOfCourage />,
-  };
+  const [stepIndex, setStepIndex] = useState(0);
+  const [planetCoords, setPlanetCoords] = useState<{
+    earth: PlanetCoords;
+    moon: PlanetCoords;
+  }>({
+    earth: { x: 0, y: 0, visible: true },
+    moon: { x: 0, y: 0, visible: true },
+  });
+
+  const currentStep = storySteps[stepIndex];
+
+  const handleAdvance = useCallback(() => {
+    setStepIndex((prev) => (prev < storySteps.length - 1 ? prev + 1 : prev));
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setStepIndex((prev) => (prev > 0 ? prev - 1 : 0));
+  }, []);
+
+  const handleRestart = useCallback(() => {
+    setStepIndex(0);
+  }, []);
+
+  const handlePositionsUpdate = useCallback(
+    (coords: { earth: PlanetCoords; moon: PlanetCoords }) => {
+      setPlanetCoords(coords);
+    },
+    []
+  );
 
   return (
-    <main className={styles.mainContainer}>
-      {/* Hero Header */}
-      <header className={styles.hero}>
-        <div className={styles.heroBadge}>Interactive Apollo 11 Story</div>
-        <h1 className={styles.heroTitle}>The Monuments We Left Behind</h1>
-        <p className={styles.heroSubtitle}>
-          A conversation across the cosmos between Earth and the Moon about the pieces
-          we dropped, the stages we sacrificed, and the eternal monuments left behind.
-        </p>
-        <div className={styles.scrollIndicator}>
-          <span>Scroll to begin the voyage</span>
-          <span className={styles.arrowDown}>↓</span>
-        </div>
-      </header>
+    <main
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        backgroundColor: "#050814",
+        userSelect: "none",
+      }}
+    >
+      {/* 3D Immersive WebGL Canvas */}
+      <SpaceCanvas
+        currentStep={currentStep}
+        onPositionsUpdate={handlePositionsUpdate}
+        onAdvance={handleAdvance}
+      />
 
-      {/* Story Scenes */}
-      <div className={styles.storyFlow}>
-        {storyScenes.map((scene) => (
-          <Scene
-            key={scene.id}
-            id={`scene-${scene.id}`}
-            title={scene.title}
-            subtitle={scene.subtitle}
-            visualCue={scene.visualCue}
-            visual={sceneVisuals[scene.id]}
-          >
-            {scene.sections.map((section) => (
-              <div key={section.id} className={styles.sectionBlock}>
-                {section.timeline && (
-                  <div className={styles.timelineRow}>
-                    <Timeline time={section.timeline} />
-                  </div>
-                )}
+      {/* Spatial Dialogue Bubble floating beside the speaking planet */}
+      <PlanetDialogueBubble
+        key={currentStep.id}
+        speaker={currentStep.speaker}
+        text={currentStep.text}
+        emotion={currentStep.emotion}
+        coords={
+          currentStep.speaker === "earth"
+            ? planetCoords.earth
+            : planetCoords.moon
+        }
+      />
 
-                <div className={styles.dialogueList}>
-                  {section.dialogue.map((item, idx) => (
-                    <DialogueBubble
-                      key={`${section.id}-${idx}`}
-                      speaker={item.speaker}
-                      text={item.text}
-                      emotion={item.emotion}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </Scene>
-        ))}
-      </div>
-
-      {/* Epilogue / Footer */}
-      <footer className={styles.epilogue}>
-        <div className={styles.epilogueQuote}>
-          <p>
-            &ldquo;I guess I am not just empty rocks and dust anymore. I am a museum of
-            human courage.&rdquo;
-          </p>
-          <span className={styles.quoteSpeaker}>— The Moon</span>
-        </div>
-        <div className={styles.footnote}>
-          <p>The Monuments We Left Behind · Built with Next.js</p>
-        </div>
-      </footer>
+      {/* Immersive HUD Overlay & Controls */}
+      <StoryHUD
+        currentStep={currentStep}
+        currentIndex={stepIndex}
+        totalSteps={storySteps.length}
+        onAdvance={handleAdvance}
+        onBack={handleBack}
+        onRestart={handleRestart}
+      />
     </main>
   );
 }

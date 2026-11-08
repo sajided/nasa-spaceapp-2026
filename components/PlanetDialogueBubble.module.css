@@ -1,0 +1,132 @@
+.bubbleWrapper {
+  position: absolute;
+  width: 360px;
+  max-width: calc(100vw - 48px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none; /* Let clicks pass through to canvas to advance */
+  animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: left 0.4s ease-out, top 0.4s ease-out;
+}
+
+.avatarPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.avatarIcon {
+  font-size: 1.1rem;
+}
+
+.speakerName {
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
+}
+
+.earthWrapper .speakerName {
+  color: #38bdf8;
+}
+
+.moonWrapper .speakerName {
+  color: #e2e8f0;
+}
+
+.emotion {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.dialogueBox {
+  position: relative;
+  padding: 1.1rem 1.35rem;
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  line-height: 1.6;
+  font-size: 1.05rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.earthWrapper .dialogueBox {
+  background: rgba(14, 51, 84, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.2);
+  border-top-left-radius: 4px;
+}
+
+.moonWrapper .dialogueBox {
+  background: rgba(45, 45, 58, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.35);
+  box-shadow: 0 8px 32px rgba(203, 213, 225, 0.15);
+  border-top-right-radius: 4px;
+}
+
+.dialogueText {
+  color: #f8fafc;
+  margin: 0;
+}
+
+.dialogueText strong {
+  color: #fbbf24;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+.speechPointer {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.pointerLeft {
+  top: 36px;
+  left: -10px;
+  border-width: 8px 10px 8px 0;
+  border-color: transparent rgba(56, 189, 248, 0.5) transparent transparent;
+}
+
+.pointerRight {
+  top: 36px;
+  right: -10px;
+  border-width: 8px 0 8px 10px;
+  border-color: transparent transparent transparent rgba(226, 232, 240, 0.4);
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .bubbleWrapper {
+    width: calc(100vw - 32px);
+    left: 16px !important;
+    top: auto !important;
+    bottom: 90px !important;
+  }
+  .speechPointer {
+    display: none;
+  }
+  .dialogueBox {
+    font-size: 0.95rem;
+    padding: 0.9rem 1.1rem;
+  }
+}
