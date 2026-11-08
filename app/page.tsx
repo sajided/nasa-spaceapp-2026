@@ -1,26 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { storySteps } from "@/data/script";
-import SpaceCanvas from "@/components/SpaceCanvas";
-import PlanetDialogueBubble from "@/components/PlanetDialogueBubble";
-import StoryHUD from "@/components/StoryHUD";
-
-interface PlanetCoords {
-  x: number;
-  y: number;
-  visible: boolean;
-}
+import Canvas3D from "@/components/Canvas3D";
+import DialogueOverlay from "@/components/DialogueOverlay";
 
 export default function Home() {
   const [stepIndex, setStepIndex] = useState(0);
-  const [planetCoords, setPlanetCoords] = useState<{
-    earth: PlanetCoords;
-    moon: PlanetCoords;
-  }>({
-    earth: { x: 0, y: 0, visible: true },
-    moon: { x: 0, y: 0, visible: true },
-  });
 
   const currentStep = storySteps[stepIndex];
 
@@ -36,12 +22,42 @@ export default function Home() {
     setStepIndex(0);
   }, []);
 
-  const handlePositionsUpdate = useCallback(
-    (coords: { earth: PlanetCoords; moon: PlanetCoords }) => {
-      setPlanetCoords(coords);
-    },
-    []
-  );
+  // Universal click & keyboard listener: click anywhere on screen or press Spacebar to advance
+  useEffect(() => {
+    const handlePointerDown = (e: PointerEvent) => {
+      // If user clicked directly on a button or inside a button, let the button handle it
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("button")) {
+        return;
+      }
+      handleAdvance();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (e.code === "Space" || e.code === "ArrowRight") {
+        e.preventDefault();
+        handleAdvance();
+      } else if (e.code === "ArrowLeft" || e.code === "Backspace") {
+        e.preventDefault();
+        handleBack();
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleAdvance, handleBack]);
 
   return (
     <main
@@ -53,30 +69,14 @@ export default function Home() {
         overflow: "hidden",
         backgroundColor: "#050814",
         userSelect: "none",
+        cursor: "pointer",
       }}
     >
-      {/* 3D Immersive WebGL Canvas */}
-      <SpaceCanvas
-        currentStep={currentStep}
-        onPositionsUpdate={handlePositionsUpdate}
-        onAdvance={handleAdvance}
-      />
+      {/* 3D WebGL Canvas with Low-Poly Models & Staging */}
+      <Canvas3D currentStep={currentStep} />
 
-      {/* Spatial Dialogue Bubble floating beside the speaking planet */}
-      <PlanetDialogueBubble
-        key={currentStep.id}
-        speaker={currentStep.speaker}
-        text={currentStep.text}
-        emotion={currentStep.emotion}
-        coords={
-          currentStep.speaker === "earth"
-            ? planetCoords.earth
-            : planetCoords.moon
-        }
-      />
-
-      {/* Immersive HUD Overlay & Controls */}
-      <StoryHUD
+      {/* Speech Bubbles beside Earth/Moon & Story HUD */}
+      <DialogueOverlay
         currentStep={currentStep}
         currentIndex={stepIndex}
         totalSteps={storySteps.length}
