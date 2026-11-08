@@ -1,0 +1,151 @@
+.distantEarthSphere {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  z-index: 5;
+}
+
+.earthSphereGlow {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #6ee7b7 0%, #3b82f6 60%, #1e3a8a 100%);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+}
+
+.sphereLabel {
+  font-size: 0.6rem;
+  font-family: var(--font-mono, monospace);
+  color: #93c5fd;
+}
+
+.zoomBtn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.72rem;
+  font-family: var(--font-mono, monospace);
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.zoomBtn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #fbbf24;
+}
+
+.moonContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.moonNormal {
+  transform: scale(1) translateY(0);
+}
+
+.moonZoomed {
+  transform: scale(2.4) translate(-25px, -15px);
+}
+
+.moonSvg {
+  width: 210px;
+  height: 210px;
+  filter: drop-shadow(0 0 35px rgba(226, 232, 240, 0.15));
+}
+
+/* The Golden Beacon at Tranquility Base */
+.monumentBeacon {
+  position: absolute;
+  top: 51%;
+  left: 63%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.beaconCore {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24, 0 0 20px #f59e0b;
+}
+
+.beaconRings {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(251, 191, 36, 0.7);
+  animation: ripple 2s infinite ease-out;
+}
+
+.beaconPointer {
+  position: absolute;
+  left: 18px;
+  top: -12px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.pinStar {
+  color: #fbbf24;
+  font-size: 0.65rem;
+}
+
+.pinTitle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fbbf24;
+  font-family: var(--font-mono, monospace);
+}
+
+.pinSub {
+  font-size: 0.55rem;
+  color: #cbd5e1;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .moonSvg {
+    width: 160px;
+    height: 160px;
+  }
+  .beaconPointer {
+    display: none;
+  }
+}
+

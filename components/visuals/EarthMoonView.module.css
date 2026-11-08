@@ -1,0 +1,111 @@
+.earthWrapper {
+  position: absolute;
+  left: 12%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: floatEarth 8s ease-in-out infinite;
+}
+
+.earthSvg {
+  width: 140px;
+  height: 140px;
+  filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.45));
+}
+
+.earthGlow {
+  position: absolute;
+  top: 15px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.moonWrapper {
+  position: absolute;
+  right: 15%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: floatMoon 9s ease-in-out infinite reverse;
+}
+
+.moonSvg {
+  width: 90px;
+  height: 90px;
+  filter: drop-shadow(0 0 15px rgba(148, 163, 184, 0.25));
+}
+
+.distanceLine {
+  position: absolute;
+  left: 36%;
+  right: 36%;
+  top: 50%;
+  height: 1px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.distanceText {
+  position: absolute;
+  top: -1.2rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  background: #080d1a;
+  padding: 0 0.4rem;
+  white-space: nowrap;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-family: var(--font-mono, monospace);
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+@keyframes floatEarth {
+  0%, 100% {
+    transform: translateY(-50%) translateY(0);
+  }
+  50% {
+    transform: translateY(-50%) translateY(-6px);
+  }
+}
+
+@keyframes floatMoon {
+  0%, 100% {
+    transform: translateY(-50%) translateY(0);
+  }
+  50% {
+    transform: translateY(-50%) translateY(8px);
+  }
+}
+
+@media (max-width: 600px) {
+  .earthSvg {
+    width: 95px;
+    height: 95px;
+  }
+  .moonSvg {
+    width: 65px;
+    height: 65px;
+  }
+  .earthWrapper {
+    left: 6%;
+  }
+  .moonWrapper {
+    right: 8%;
+  }
+}
+

@@ -1,0 +1,237 @@
+.controls {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 10;
+}
+
+.phaseBtn {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-family: var(--font-mono, monospace);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.phaseBtn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  color: #f1f5f9;
+}
+
+.activeBtn {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  border-color: #38bdf8;
+  font-weight: 600;
+}
+
+/* Phase 1: Moon Impact */
+.moonImpactContainer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lunarSurface {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: #334155;
+  border-top: 1px solid #64748b;
+}
+
+.crashSite {
+  position: absolute;
+  top: 10px;
+  left: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.impactFlash {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 20px #f59e0b;
+  opacity: 0.7;
+}
+
+.debris {
+  width: 14px;
+  height: 6px;
+  background: #475569;
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+.impactTag {
+  white-space: nowrap;
+  font-size: 0.62rem;
+  font-family: var(--font-mono, monospace);
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.csmDeparting {
+  position: absolute;
+  top: 25%;
+  right: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.csmMini {
+  width: 24px;
+  height: 14px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  border: 1px solid #ffffff;
+}
+
+.departTag {
+  white-space: nowrap;
+  font-size: 0.62rem;
+  font-family: var(--font-mono, monospace);
+  color: #38bdf8;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+/* Phase 2: Earth Splashdown & Burning SM */
+.earthReentryContainer {
+  position: absolute;
+  inset: 0;
+}
+
+.earthOcean {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 75px;
+  background: linear-gradient(to bottom, #1d4ed8 0%, #1e3a8a 100%);
+  border-top: 2px solid #38bdf8;
+  box-shadow: 0 -10px 30px rgba(56, 189, 248, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.atmosphereFrictionLayer {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, rgba(239, 68, 68, 0.3));
+  pointer-events: none;
+}
+
+.oceanLabel {
+  font-size: 0.68rem;
+  font-family: var(--font-mono, monospace);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.burningSm {
+  position: absolute;
+  top: 20%;
+  left: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(35deg);
+}
+
+.smPiece {
+  width: 22px;
+  height: 16px;
+  background: #ef4444;
+  border-radius: 2px;
+  box-shadow: 0 0 15px #ef4444, 0 0 30px #f59e0b;
+}
+
+.fireTrail {
+  width: 4px;
+  height: 40px;
+  background: linear-gradient(to top, #ef4444, #f59e0b, transparent);
+  margin-top: -2px;
+}
+
+.burnTag {
+  white-space: nowrap;
+  font-size: 0.62rem;
+  font-family: var(--font-mono, monospace);
+  color: #f87171;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-top: 4px;
+  transform: rotate(-35deg);
+}
+
+.splashdownModule {
+  position: absolute;
+  bottom: 50px;
+  right: 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chutes {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 2px;
+}
+
+.chute1, .chute2, .chute3 {
+  width: 14px;
+  height: 12px;
+  background: radial-gradient(circle, #f97316 40%, #ffffff 100%);
+  border-radius: 50% 50% 0 0;
+}
+
+.heatShieldCone {
+  width: 18px;
+  height: 15px;
+  background: #475569;
+  border-bottom: 3px solid #1e293b;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.splashTag {
+  white-space: nowrap;
+  font-size: 0.62rem;
+  font-family: var(--font-mono, monospace);
+  color: #38bdf8;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .impactTag, .departTag, .burnTag, .splashTag {
+    display: none;
+  }
+}
+
