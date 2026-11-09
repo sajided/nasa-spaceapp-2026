@@ -43,16 +43,19 @@ for (const file of sources.sort()) {
     continue;
   }
   const out = resolve(OUT, `${id}.m4a`);
+  const timing = resolve(IN, `${id}.json`);
+  // Real mission audio keeps its leading hiss, so its word times stay true.
+  const keepSilence = existsSync(timing) && JSON.parse(readFileSync(timing, 'utf8')).keepSilence === true;
+  const trim = 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,';
   execFileSync('ffmpeg', [
     '-y', '-loglevel', 'error',
     '-i', resolve(IN, file),
-    '-af', 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,loudnorm=I=-18:TP=-2',
+    '-af', `${keepSilence ? '' : trim}loudnorm=I=-18:TP=-2`,
     '-ac', '1', '-ar', '24000', '-c:a', 'aac', '-b:a', '24k',
     out,
   ]);
   total += statSync(out).size;
   lines.push(id);
-  const timing = resolve(IN, `${id}.json`);
   if (existsSync(timing)) {
     copyFileSync(timing, resolve(OUT, `${id}.json`));
     timings.push(id);
@@ -61,5 +64,5 @@ for (const file of sources.sort()) {
 
 writeFileSync(resolve(OUT, 'manifest.json'), `${JSON.stringify({ lines, timings }, null, 2)}\n`);
 const missing = [...ids].filter((id) => !lines.includes(id));
-console.log(`${lines.length} recordings, ${(total / 1024).toFixed(0)} KB (budget 700 KB).`);
+console.log(`${lines.length} recordings, ${(total / 1024).toFixed(0)} KB (budget 900 KB).`);
 if (missing.length) console.log(`Not yet recorded (${missing.length}): ${missing.join(', ')}`);

@@ -15,6 +15,7 @@ import { createStoryEpilogue } from './epilogue';
 import { createGlide } from './glide';
 import { createLetGo, type LetGoState } from './letGo';
 import { createStartScreen } from './start';
+import { createSoundscape } from './soundscape';
 import { createVoiceLock } from './voiceLock';
 import { createWeightMeter } from './weightMeter';
 
@@ -64,8 +65,26 @@ const MOON_POS = new Vector3(EARTH_MOON_DISTANCE, 0, 0);
 export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
   const { timeline, camera } = deps;
   const linesById = new Map(STORY_LINES.map((l) => [l.id, l]));
-  const narration = createNarration((id) => linesById.get(id));
+  // Only the Earth and the Moon fall back to the browser's voice; mission
+  // lines are real recordings or nothing.
+  const narration = createNarration((id) => {
+    const l = linesById.get(id);
+    return l && l.speaker !== 'mission' ? { text: l.text, speaker: l.speaker } : undefined;
+  });
+  /** Whether the voice sounding now should hold the page still. */
+  const voiceHolds = (): boolean => {
+    const id = narration.playingLine();
+    if (id && linesById.get(id)?.flow && !narration.waiting()) return false;
+    return narration.isPlaying();
+  };
   const glide = createGlide();
+  const soundscape = createSoundscape();
+  /** Sound on or off for the voices and the effects together. */
+  const setSound = (on: boolean): void => {
+    narration.setEnabled(on);
+    soundscape.setEnabled(on);
+  };
+  let lastSounding: string | null = null;
   const album = createAlbum();
   const about = createAbout();
   const meter = createWeightMeter();
@@ -91,7 +110,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
     trackVh: deps.trackVh,
     onGlide: (p, ms) => glide.to(p, ms),
     onToggleSound: () => {
-      narration.setEnabled(!narration.enabled());
+      setSound(!narration.enabled());
       return narration.enabled();
     },
     soundOn: () => narration.enabled(),
@@ -105,7 +124,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
 
   const start = deps.showStart
     ? createStartScreen((sound) => {
-        narration.setEnabled(sound);
+        setSound(sound);
         controls.play();
       })
     : null;
@@ -140,14 +159,20 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
       lastProgress = progress;
       const direction = Math.abs(delta) > 1e-6 ? (delta > 0 ? 1 : -1) : getDirection();
       narration.update(lastLineId, direction);
-      voiceLock.update(narration.state().playing);
+      voiceLock.update(narration.state().playing && voiceHolds());
+      const sounding = narration.playingLine();
+      const radioStarted = sounding !== null && sounding !== lastSounding && Boolean(linesById.get(sounding)?.radio);
+      lastSounding = sounding;
+      soundscape.update(met, direction, sounding !== null, radioStarted);
       album.update(met);
       meter.update(met);
       letGo.update(progress);
 
       let anchor: ScreenAnchor | null = null;
       if (line && systemVisible) {
-        anchor = line.speaker === 'earth' ? anchorFor(EARTH_POS, EARTH_RADIUS) : anchorFor(MOON_POS, MOON_RADIUS);
+        if (line.speaker === 'earth') anchor = anchorFor(EARTH_POS, EARTH_RADIUS);
+        else if (line.speaker === 'moon') anchor = anchorFor(MOON_POS, MOON_RADIUS);
+        // Mission radio has no body to point at: it docks.
       }
       let lineFraction = 0;
       if (line) {
@@ -173,7 +198,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
       epilogue.update({ met, collected: album.collected(), site });
 
       controls.update(progress, {
-        speaking: narration.isPlaying(),
+        speaking: voiceHolds(),
         lineId: lastLineId,
         lineWords: line ? line.text.split(/\s+/).length : 0,
         waiting: letGo.state().waiting || album.isOpen() || about.isOpen() || epilogue.waiting(),
@@ -210,6 +235,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
       album.dispose();
       glide.dispose();
       voiceLock.dispose();
+      soundscape.dispose();
       narration.dispose();
     },
   };

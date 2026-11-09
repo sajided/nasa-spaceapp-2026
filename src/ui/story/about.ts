@@ -18,6 +18,7 @@ const SOURCES: [string, string][] = [
   ['Apollo 11 Lunar Surface Journal — NASA History', 'https://www.nasa.gov/history/alsj/a11/a11.html'],
   ['Lunar Reconnaissance Orbiter Camera (NASA/GSFC/Arizona State University)', 'https://www.lroc.asu.edu/'],
   ['NASA 3D Resources (Earth and Moon imagery, F-1 engine model)', 'https://github.com/nasa/NASA-3D-Resources'],
+  ['NASA Historical Sounds (the real Apollo 11 audio: liftoff, landing, first step)', 'https://www.nasa.gov/historical-sounds/'],
 ];
 
 export function createAbout(): AboutPanel {
@@ -38,13 +39,13 @@ export function createAbout(): AboutPanel {
         <button type="button" data-close aria-label="Close" style="width:${story.touch}px;height:${story.touch}px;border-radius:50%;border:3px solid ${story.paperEdge};background:#fff;font-size:24px;cursor:pointer;">✕</button>
       </div>
       <p><strong>The Monuments We Left Behind</strong> was made for the NASA Space Apps Challenge, “Abandoned but not forgotten”. It follows the real Apollo 11 mission of July 1969, told by the Earth and the Moon.</p>
-      <p><strong>What is real:</strong> the order and timing of every event, what each piece of the ship was, and where it rests today. The photograph of the landing site is a real image taken from lunar orbit.</p>
-      <p><strong>What is made up:</strong> the Earth and the Moon talking, and their feelings! The 3D scenes are stylised, distances and sizes between scenes are not to scale, and the glow on the Moon marks the landing site rather than its exact spot. Weights are rounded.</p>
+      <p><strong>What is real:</strong> the order and timing of every event, what each piece of the ship was, and where it rests today. The photograph of the landing site is a real image taken from lunar orbit. The 📻 radio lines are the real 1969 recordings.</p>
+      <p><strong>What is made up:</strong> the Earth and the Moon talking, and their feelings! Their voices are made with AI (ElevenLabs), and the rocket and machine sounds are made up by the computer. The 3D scenes are stylised, distances and sizes between scenes are not to scale, and the glow on the Moon marks the landing site rather than its exact spot. Weights are rounded.</p>
       <h3 style="margin:16px 0 6px;font-size:20px;">Sources</h3>
       <ul style="margin:0;padding-left:22px;">
         ${SOURCES.map(([t, u]) => `<li><a href="${u}" target="_blank" rel="noopener" style="color:${story.earthDeep}">${t}</a></li>`).join('')}
       </ul>
-      <p style="margin-top:14px;font-size:16px;color:${story.inkDim}">NASA imagery is in the public domain. NASA does not endorse this project.</p>
+      <p style="margin-top:14px;font-size:16px;color:${story.inkDim}">NASA imagery and audio are in the public domain. NASA does not endorse this project. Character voices by ElevenLabs.</p>
     </div>
   `;
   document.body.appendChild(root);

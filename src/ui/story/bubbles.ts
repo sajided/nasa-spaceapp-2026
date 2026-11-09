@@ -130,10 +130,17 @@ export function createStoryBubbles(onReplay: () => void): StoryBubbles {
     root.dataset.speaker = line.speaker;
     root.dataset.mood = line.mood;
     portrait.innerHTML = portraitSvg(line.speaker, line.mood);
-    const isEarth = line.speaker === 'earth';
-    name.textContent = isEarth ? 'Earth' : 'Moon';
-    name.style.color = isEarth ? story.earthDeep : story.moonDeep;
-    bubble.style.borderColor = isEarth ? '#BBD8F5' : '#D8D3E6';
+    if (line.speaker === 'mission') {
+      // The real 1969 audio: who is speaking, and that it is the real thing.
+      name.textContent = `📻 ${line.who ?? 'Apollo 11'} · real NASA audio, 1969`;
+      name.style.color = '#8A5A12';
+      bubble.style.borderColor = '#E9B872';
+    } else {
+      const isEarth = line.speaker === 'earth';
+      name.textContent = isEarth ? 'Earth' : 'Moon';
+      name.style.color = isEarth ? story.earthDeep : story.moonDeep;
+      bubble.style.borderColor = isEarth ? '#BBD8F5' : '#D8D3E6';
+    }
 
     text.textContent = '';
     words = [];
@@ -200,7 +207,8 @@ export function createStoryBubbles(onReplay: () => void): StoryBubbles {
     const earth = line.speaker === 'earth';
     side = earth ? 'left' : 'right';
     root.style.flexDirection = earth ? 'row' : 'row-reverse';
-    const x = earth ? MARGIN : vw - MARGIN - w;
+    // Mission radio belongs to neither body: centred.
+    const x = line.speaker === 'mission' ? (vw - w) / 2 : earth ? MARGIN : vw - MARGIN - w;
     root.style.transform = `translate(${Math.round(Math.max(MARGIN, x))}px, ${Math.round(vh - DOCK_BOTTOM - h)}px)`;
   };
 

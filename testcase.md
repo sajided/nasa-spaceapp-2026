@@ -676,9 +676,11 @@ spec's header).
 | TC-PS-13 | Classic mode has no story layer and no story chapters | Yes |
 | TC-PS-14 | The prologue round-trips: the dump and the scale and sky channels are identical after a forward and back pass | Yes |
 | TC-PS-15 | `docs/story.md` and `src/data/story.ts` carry the same line ids and text | Yes |
-| TC-PS-16 | With recordings in place, each line plays as it arrives moving forward, stops when it leaves, never auto-plays scrolling back, and auto-advance holds until it ends | Manual (needs recordings) |
+| TC-PS-16 | Each line plays as it arrives moving forward and finishes even if the reader scrolls on (then the line on screen plays); scrolling back fades it and never starts one; forward scrolling and auto-advance hold until it ends, except the liftoff call | Manual (listen) |
 | TC-PS-17 | Read-aloud check with three children aged 6–9: they can follow, they find the album, and they press "Let go!" unprompted | Manual |
 | TC-PS-18 | Fact sign-off: every † item in `docs/story.md` checked against its source | Manual |
+| TC-PS-19 | The real NASA audio sits at its real moments (countdown, liftoff, "The Eagle has landed", the first step), each recorded, captioned in a docked radio bubble | Yes |
+| TC-PS-20 | Sound effects: rumble through each burn, a bang at each separation moving forward (none scrolling back, none on a scene jump), docking clunk, touchdown thud, splashdown | Manual (listen) |
 
 ## Cross-cutting regression suite
 

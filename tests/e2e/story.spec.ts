@@ -265,3 +265,24 @@ test('TC-PS-15 the script and the story data use the same line ids', () => {
     expect(normalisedScript, line.id).toContain(plain(line.text));
   }
 });
+
+test('TC-PS-19 the real mission audio sits at its real moments, recorded and captioned', async ({ page }) => {
+  const mission = STORY_LINES.filter((l) => l.speaker === 'mission');
+  expect(mission.map((l) => l.id)).toEqual(['s2-03b', 's2-03c', 's4-04b', 's5-00']);
+  expect(STORY_LINES.find((l) => l.id === 's2-03c')!.metStart).toBe(MET.liftoff);
+  const landed = STORY_LINES.find((l) => l.id === 's4-04b')!;
+  expect(MET.eagleLanded).toBeGreaterThanOrEqual(landed.metStart);
+  expect(MET.eagleLanded).toBeLessThan(landed.metEnd);
+  const manifest = JSON.parse(readFileSync(resolve(process.cwd(), 'public/audio/manifest.json'), 'utf8'));
+  for (const l of mission) {
+    expect(manifest.lines, l.id).toContain(l.id);
+    expect(manifest.timings, l.id).toContain(l.id);
+  }
+
+  await bootPage(page, STORY_URL);
+  await seekMet(page, mid('s4-04b'));
+  const s = await story(page);
+  expect(s.lineId).toBe('s4-04b');
+  expect(s.placement).toBe('docked');
+  await expect(page.locator('.story-name')).toContainText('real NASA audio');
+});

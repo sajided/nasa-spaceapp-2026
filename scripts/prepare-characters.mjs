@@ -110,3 +110,85 @@ for (const [k, src] of panels.entries()) {
   await cutMoon(src, `${outDir}${moon}.webp`);
   console.log(`wrote ${earth}.webp, ${moon}.webp`);
 }
+
+// ── Happy Moon faces ───────────────────────────────────────────────────────
+// The artwork has no happy Moon, so build two from the artist's own strokes:
+// wipe the ink off a Moon cut-out (filling each inked pixel from the grey
+// around it), then lay the black ink of an Earth face over it.
+//   moon-laugh: the Earth's laughing face (panel 2)
+//   moon-cheer: the Earth's cheerful talking face (panel 3)
+const lum = (d, i) => 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+
+async function rgba(file) {
+  return sharp(file).ensureAlpha().raw().toBuffer();
+}
+
+/** The Moon with its face wiped: ink pixels filled in from the outside in. */
+async function blankMoon() {
+  const d = await rgba(`${outDir}moon-sad.webp`);
+  const N = SIZE * SIZE;
+  const ink = new Uint8Array(N);
+  for (let i = 0; i < N; i++) {
+    // Dark and opaque: the drawn lines, plus a pixel of margin for their soft edges.
+    if (d[i * 4 + 3] > 200 && lum(d, i * 4) < 120) ink[i] = 1;
+  }
+  const grow = new Uint8Array(ink);
+  for (let i = 0; i < N; i++) {
+    if (!ink[i]) continue;
+    for (const j of neighbours(i, SIZE, SIZE)) if (j >= 0) grow[j] = 1;
+  }
+  let todo = grow.reduce((a, b) => a + b, 0);
+  while (todo > 0) {
+    const next = [];
+    for (let i = 0; i < N; i++) {
+      if (!grow[i]) continue;
+      let r = 0, g = 0, b = 0, n = 0;
+      const x = i % SIZE, y = (i / SIZE) | 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx < 0 || yy < 0 || xx >= SIZE || yy >= SIZE) continue;
+        const j = yy * SIZE + xx;
+        if (grow[j] || d[j * 4 + 3] < 200) continue;
+        r += d[j * 4]; g += d[j * 4 + 1]; b += d[j * 4 + 2]; n++;
+      }
+      if (n) next.push([i, r / n, g / n, b / n]);
+    }
+    if (!next.length) break;
+    for (const [i, r, g, b] of next) {
+      d[i * 4] = r; d[i * 4 + 1] = g; d[i * 4 + 2] = b;
+      grow[i] = 0;
+      todo--;
+    }
+  }
+  return d;
+}
+
+/** The black ink of an Earth face, as an alpha mask, from the middle of the disc only. */
+async function faceInk(name) {
+  const d = await rgba(`${outDir}${name}.webp`);
+  const mask = Buffer.alloc(SIZE * SIZE);
+  for (let y = Math.round(SIZE * 0.18); y < SIZE * 0.82; y++) {
+    for (let x = Math.round(SIZE * 0.12); x < SIZE * 0.88; x++) {
+      const i = y * SIZE + x;
+      const l = lum(d, i * 4);
+      const r = d[i * 4], g = d[i * 4 + 1], b = d[i * 4 + 2];
+      // The dark green edges of the land are not ink.
+      if (d[i * 4 + 3] < 200 || g - Math.max(r, b) > 18) continue;
+      // Ink is near-black; its soft, blue-tinted edges fade out by 120.
+      mask[i] = Math.max(0, Math.min(255, Math.round(((120 - l) / 75) * 255)));
+    }
+  }
+  return mask;
+}
+
+const blank = await blankMoon();
+for (const [face, from] of [['moon-laugh', 'earth-laugh'], ['moon-cheer', 'earth-smug']]) {
+  const ink = await faceInk(from);
+  const out = Buffer.from(blank);
+  for (let i = 0; i < SIZE * SIZE; i++) {
+    const a = (ink[i] / 255) * (out[i * 4 + 3] / 255);
+    for (let c = 0; c < 3; c++) out[i * 4 + c] = Math.round(out[i * 4 + c] * (1 - a) + 17 * a);
+  }
+  await webp(sharp(out, { raw: { width: SIZE, height: SIZE, channels: 4 } })).toFile(`${outDir}${face}.webp`);
+  console.log(`wrote ${face}.webp (from ${from})`);
+}

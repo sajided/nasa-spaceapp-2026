@@ -59,6 +59,10 @@ export interface Narration {
   /** True while the current line's recording is still playing. */
   isPlaying(): boolean;
   has(lineId: string): boolean;
+  /** The line whose voice is sounding now (may still be finishing after its line left). */
+  playingLine(): string | null;
+  /** Whether a line on screen is waiting for the current voice to finish. */
+  waiting(): boolean;
   state(): NarrationState;
   dispose(): void;
 }
@@ -425,6 +429,8 @@ export function createNarration(lineText: (id: string) => SpokenLine | undefined
     // A line waiting its turn counts: auto-advance holds for it too.
     isPlaying: () => playing || pendingId !== null,
     has: (id: string) => available.has(id) || canSpeak(id),
+    playingLine: () => (playing ? playingId : null),
+    waiting: () => pendingId !== null,
 
     state: () => ({
       enabled: on,

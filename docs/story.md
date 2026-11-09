@@ -9,6 +9,7 @@
 - `(Cue: …)` describes what the 3D scene shows. The mission time (T+) comes from `src/data/separations.ts` and `src/data/mission.ts`.
 - 📒 marks the point where a **Monument Album** card is collected. The card's text is in the table at the end.
 - Facts marked † should be checked against the Sources section before recording.
+- 📻 **Mission** lines are not recorded: they are the real 1969 audio from NASA's recordings (public domain), cut by `scripts/prepare-mission-audio.mjs`. Their text is what is said on the tape, word for word, and is shown as a caption.
 
 ---
 
@@ -34,6 +35,13 @@
 | s2-01 | Earth | proud | "My humans built a giant rocket called the Saturn V. It's as tall as a 36-storey building!" |
 | s2-02 | Earth | smiling | "But it's very heavy. To reach you, they had to let go of pieces along the way." |
 | s2-03 | Moon | curious | "Let go? What did they leave behind?" |
+
+*(Cue: T− 8 s. The engines light. Then T+ 0: liftoff — the rocket keeps rising while the call plays.)*
+
+| ID | Speaker | Mood | Line |
+|---|---|---|---|
+| s2-03b | 📻 Mission (Jack King, NASA Launch Control) | — | "Ignition sequence start. Six, five, four, three, two, one, zero. All engines running." |
+| s2-03c | 📻 Mission (Jack King, NASA Launch Control) | — | "Liftoff! We have a liftoff, thirty-two minutes past the hour. Liftoff on Apollo 11. Tower cleared. We got a roll program." |
 
 *(Cue: T+ 2:42. About 67 km high. The First Stage drops away. "Let go!" button.)* 📒 **S-IC**
 
@@ -95,12 +103,19 @@
 | s4-03 | Earth | happy | "A day later, Eagle let go of the main ship, Columbia." |
 | s4-04 | Earth | proud | "Michael stayed in Columbia. Neil and Buzz flew Eagle down to meet you." |
 
+*(Cue: T+ 102:45:58. Eagle has touched down at Tranquility Base.)*
+
+| ID | Speaker | Mood | Line |
+|---|---|---|---|
+| s4-04b | 📻 Mission (Neil Armstrong and Mission Control) | — | "Houston, uh, Tranquility Base here. The Eagle has landed. Roger, Twan… Tranquility. We copy you on the ground. You got a bunch of guys about to turn blue. We're breathing again. Thanks a lot." |
+
 ## Scene 5 — The Greatest Monument (The Lunar Surface)
 
 *(Cue: Eagle lands at Tranquility Base. The Moon gets a little warmer. Astronauts walk and set up equipment. Footprints.)*
 
 | ID | Speaker | Mood | Line |
 |---|---|---|---|
+| s5-00 | 📻 Mission (Neil Armstrong) | — | "I'm going to step off the LM now. That's one small step for man, one giant leap for mankind." |
 | s5-01 | Moon | happy | "They landed! They're walking on me! That tickles!" |
 | s5-02 | Earth | smiling | "Look, they're leaving gifts for you." |
 
@@ -177,7 +192,7 @@
 
 | ID | Speaker | Mood | Line |
 |---|---|---|---|
-| s7-08 | Moon | curious | "If you came to visit me, what would you leave behind?" |
+| s7-08 | Moon | smiling | "If you came to visit me, what would you leave behind?" |
 | s7-09 | Moon | happy | "Thank you! I'll keep it safe forever." |
 
 *(Cue: Final shot.)*
@@ -224,6 +239,7 @@ Kids collect these. Each card's "fact" is one or two short sentences.
 
 ## Sources
 
+- Mission audio: NASA, "Historical Sounds", <https://www.nasa.gov/historical-sounds/> (Apollo 11: "We Have a Lift-Off", "Eagle Has Landed Extended", "That's One Small Step for (a) Man"). NASA audio is not copyrighted; it is used here without implying NASA endorsement.
 - Apollo 11 Flight Journal (NASA): <https://www.nasa.gov/history/afj/ap11fj/>. Use it for event times.
 - Apollo 11 Lunar Surface Journal: <https://www.nasa.gov/history/alsj/a11/a11.html>. Use it for the surface items, the plaque and the goodwill disk.
 - *Saturn V Launch Vehicle Flight Evaluation Report, AS-506*. Use it for stage masses and separation times.

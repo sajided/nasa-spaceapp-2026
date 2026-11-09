@@ -12,7 +12,8 @@ import { MET, STORY_MET } from './mission';
  * from) and with the audio files, `public/audio/<id>.m4a`. Never renumber them.
  */
 
-export type Speaker = 'earth' | 'moon';
+/** 'mission' lines are the real 1969 radio and commentary, played from NASA's recordings. */
+export type Speaker = 'earth' | 'moon' | 'mission';
 export type Mood = 'sad' | 'happy' | 'shocked' | 'annoyed' | 'smiling' | 'curious' | 'proud';
 
 export interface StoryLine {
@@ -23,6 +24,15 @@ export interface StoryLine {
   text: string;
   metStart: number;
   metEnd: number;
+  /** Mission lines: who is speaking on the real recording. */
+  who?: string;
+  /**
+   * The scene keeps moving while this line plays (auto-play and scrolling
+   * are not held for it) — for the liftoff call, heard as the rocket rises.
+   */
+  flow?: boolean;
+  /** Air-to-ground radio: opens with the "Quindar" beep the real link used. */
+  radio?: boolean;
 }
 
 export interface StoryScene {
@@ -45,7 +55,18 @@ export const STORY_SCENES: StoryScene[] = [
   { id: 7, title: 'A Museum of Courage', metStart: E },
 ];
 
-type Row = [id: string, speaker: Speaker, mood: Mood, metStart: number, metEnd: number, text: string];
+type Row = [
+  id: string,
+  speaker: Speaker,
+  mood: Mood,
+  metStart: number,
+  metEnd: number,
+  text: string,
+  extra?: { who: string; flow?: boolean; radio?: boolean },
+];
+
+/** Real mission audio (NASA, public domain); the mood is unused for these. */
+const PAO = { who: 'Jack King, NASA Launch Control' };
 
 /** Compact rows; the scene number comes from the id. */
 const ROWS: Row[] = [
@@ -61,6 +82,8 @@ const ROWS: Row[] = [
   ['s2-01', 'earth', 'proud', -400, -280, 'My humans built a giant rocket called the Saturn V. It’s as tall as a 36-storey building!'],
   ['s2-02', 'earth', 'smiling', -280, -150, 'But it’s very heavy. To reach you, they had to let go of pieces along the way.'],
   ['s2-03', 'moon', 'curious', -150, -12, 'Let go? What did they leave behind?'],
+  ['s2-03b', 'mission', 'proud', MET.ignition, MET.liftoff, 'Ignition sequence start. Six, five, four, three, two, one, zero. All engines running.', PAO],
+  ['s2-03c', 'mission', 'proud', MET.liftoff, 30, 'Liftoff! We have a liftoff, thirty-two minutes past the hour. Liftoff on Apollo 11. Tower cleared. We got a roll program.', { ...PAO, flow: true }],
   ['s2-04', 'earth', 'happy', 140, 166, 'After less than three minutes, the huge First Stage was out of fuel. Let it go!'],
   ['s2-05', 'earth', 'smiling', 166, 189, 'It fell into my Atlantic Ocean, deep, deep down.'],
   ['s2-06', 'earth', 'happy', 189, 195.5, 'Then a big metal ring dropped off, like taking off a belt.'],
@@ -86,9 +109,11 @@ const ROWS: Row[] = [
   ['s4-02', 'moon', 'shocked', MET.loiIgnition, MET.loi2, 'They’re here! They’re really going around me!'],
   ['s4-03', 'earth', 'happy', MET.sepUndock - 60, MET.sepUndock + 12, 'A day later, Eagle let go of the main ship, Columbia.'],
   ['s4-04', 'earth', 'proud', MET.sepUndock + 12, MET.csmSepBurn + 900, 'Michael stayed in Columbia. Neil and Buzz flew Eagle down to meet you.'],
+  ['s4-04b', 'mission', 'proud', MET.eagleLanded - 1, MET.eagleLanded + 600, 'Houston, uh, Tranquility Base here. The Eagle has landed. Roger, Twan… Tranquility. We copy you on the ground. You got a bunch of guys about to turn blue. We’re breathing again. Thanks a lot.', { who: 'Neil Armstrong and Mission Control', radio: true }],
 
   // ── Scene 5: The Greatest Monument ──────────────────────────────────────
-  ['s5-01', 'moon', 'happy', MET.firstStep - 60, MET.aldrinOut + 60, 'They landed! They’re walking on me! That tickles!'],
+  ['s5-00', 'mission', 'proud', MET.firstStep - 60, MET.firstStep + 40, 'I’m going to step off the LM now. That’s one small step for man, one giant leap for mankind.', { who: 'Neil Armstrong', radio: true }],
+  ['s5-01', 'moon', 'happy', MET.firstStep + 40, MET.aldrinOut + 60, 'They landed! They’re walking on me! That tickles!'],
   ['s5-02', 'earth', 'smiling', MET.aldrinOut + 60, MET.flag - 120, 'Look, they’re leaving gifts for you.'],
   ['s5-03', 'earth', 'proud', MET.flag - 120, MET.lrrr + 300, 'A flag, a special mirror, a quake detector… and their footprints.'],
   ['s5-04', 'earth', 'happy', MET.lrrr + 300, MET.hatchClose, 'And a tiny disk with good wishes from people all over my world.'],
@@ -117,13 +142,13 @@ const ROWS: Row[] = [
   ['s7-05', 'earth', 'smiling', STORY_MET.laserIn, E + 610, 'And every day, my scientists bounce light off the mirror they left you.'],
   ['s7-06', 'earth', 'happy', E + 610, STORY_MET.laserOut, 'It’s my way of saying hello.'],
   ['s7-07', 'moon', 'smiling', STORY_MET.mapIn, STORY_MET.mapOut, 'I’m not just rocks and dust anymore. I’m a museum of human courage!'],
-  ['s7-08', 'moon', 'curious', STORY_MET.leaveIn, E + 1000, 'If you came to visit me, what would you leave behind?'],
+  ['s7-08', 'moon', 'smiling', STORY_MET.leaveIn, E + 1000, 'If you came to visit me, what would you leave behind?'],
   ['s7-09', 'moon', 'happy', E + 1000, STORY_MET.leaveOut, 'Thank you! I’ll keep it safe forever.'],
   ['s7-10', 'earth', 'proud', STORY_MET.finale, E + 1120, 'And Moon… my humans are coming back.'],
   ['s7-11', 'moon', 'happy', E + 1120, STORY_MET.epilogueEnd, 'I’ll be waiting!'],
 ];
 
-export const STORY_LINES: StoryLine[] = ROWS.map(([id, speaker, mood, metStart, metEnd, text]) => ({
+export const STORY_LINES: StoryLine[] = ROWS.map(([id, speaker, mood, metStart, metEnd, text, extra]) => ({
   id,
   scene: Number(id.slice(1, id.indexOf('-'))),
   speaker,
@@ -131,6 +156,7 @@ export const STORY_LINES: StoryLine[] = ROWS.map(([id, speaker, mood, metStart, 
   text,
   metStart,
   metEnd,
+  ...extra,
 }));
 
 /**

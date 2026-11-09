@@ -15,7 +15,8 @@
     "prepare:engines": "node scripts/prepare-engines.mjs",
     "prepare:textures": "node scripts/prepare-textures.mjs",
     "prepare:audio": "node scripts/prepare-audio.mjs",
-    "voices": "node scripts/generate-voices.mjs"
+    "voices": "node scripts/generate-voices.mjs",
+    "prepare:mission-audio": "node scripts/prepare-mission-audio.mjs"
   },
   "dependencies": {
     "animejs": "^4.5.0",
