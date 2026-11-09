@@ -16,7 +16,7 @@ dialogue, the Monument Album, the weight meter, "Let go!" and the playback contr
 `?story=0` gives the classic replay that the mission specs run against.
 
 Content still to come:
-- Voice recordings. The page reads as text until they exist.
+- Voice recordings. Until they exist, the browser's own text-to-speech reads each line (a different voice for the Earth and the Moon), or the page reads as text where the browser has no English voice.
 - Final fact sign-off. Items are marked † in the script.
 
 ## Running it

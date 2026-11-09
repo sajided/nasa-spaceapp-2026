@@ -4,7 +4,7 @@ import { createNarration, type NarrationState } from '../../core/narration';
 import { getDirection } from '../../core/progress';
 import type { SeparationWindow } from '../../core/separation';
 import type { TimelineBundle } from '../../core/timeline';
-import { STORY_SCENES, storyLineAt, storySceneAt } from '../../data/story';
+import { STORY_LINES, STORY_SCENES, storyLineAt, storySceneAt } from '../../data/story';
 import { SITE_DIRECTION } from '../../scene/system';
 import type { CalloutCard } from '../callouts';
 import { createAbout } from './about';
@@ -15,6 +15,7 @@ import { createStoryEpilogue } from './epilogue';
 import { createGlide } from './glide';
 import { createLetGo, type LetGoState } from './letGo';
 import { createStartScreen } from './start';
+import { createVoiceLock } from './voiceLock';
 import { createWeightMeter } from './weightMeter';
 
 /**
@@ -62,13 +63,15 @@ const MOON_POS = new Vector3(EARTH_MOON_DISTANCE, 0, 0);
 
 export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
   const { timeline, camera } = deps;
-  const narration = createNarration();
+  const linesById = new Map(STORY_LINES.map((l) => [l.id, l]));
+  const narration = createNarration((id) => linesById.get(id));
   const glide = createGlide();
   const album = createAlbum();
   const about = createAbout();
   const meter = createWeightMeter();
   const letGo = createLetGo(deps.windows, glide);
   const bubbles = createStoryBubbles(() => narration.replay());
+  const voiceLock = createVoiceLock(() => bubbles.nudge());
   const epilogue = createStoryEpilogue(
     () => glide.to(0, 0),
     () => about.open(),
@@ -122,6 +125,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
 
   let lastLineId: string | null = null;
   let lastScene = 1;
+  let lastProgress = 0;
 
   return {
     update(progress: number, met: number, systemVisible: boolean): void {
@@ -130,7 +134,13 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
       lastLineId = line?.id ?? null;
       lastScene = scene.id;
 
-      narration.update(lastLineId, getDirection());
+      // This frame's own movement: the shared direction is last frame's, which
+      // reads as "still" when a wheel jump follows a quiet frame.
+      const delta = progress - lastProgress;
+      lastProgress = progress;
+      const direction = Math.abs(delta) > 1e-6 ? (delta > 0 ? 1 : -1) : getDirection();
+      narration.update(lastLineId, direction);
+      voiceLock.update(narration.state().playing);
       album.update(met);
       meter.update(met);
       letGo.update(progress);
@@ -199,6 +209,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
       about.dispose();
       album.dispose();
       glide.dispose();
+      voiceLock.dispose();
       narration.dispose();
     },
   };

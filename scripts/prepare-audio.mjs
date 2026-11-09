@@ -7,7 +7,7 @@
  * Input:  recordings/<lineId>.wav (or .m4a/.mp3/.aif) — one file per line of
  *         docs/story.md, named by its id, e.g. recordings/s1-02.wav.
  *         Optional recordings/<lineId>.json word timings: { "words": [0, 0.4, …] }
- * Output: public/audio/<lineId>.m4a — AAC, mono, 32 kbps (plays everywhere,
+ * Output: public/audio/<lineId>.m4a — AAC, mono, 24 kbps (plays everywhere,
  *         Safari included), silence trimmed, loudness normalised;
  *         public/audio/<lineId>.json copied through;
  *         public/audio/manifest.json — the list core/narration.ts reads, so
@@ -47,7 +47,7 @@ for (const file of sources.sort()) {
     '-y', '-loglevel', 'error',
     '-i', resolve(IN, file),
     '-af', 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,loudnorm=I=-18:TP=-2',
-    '-ac', '1', '-ar', '24000', '-c:a', 'aac', '-b:a', '32k',
+    '-ac', '1', '-ar', '24000', '-c:a', 'aac', '-b:a', '24k',
     out,
   ]);
   total += statSync(out).size;

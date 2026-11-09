@@ -205,14 +205,15 @@ test('TC-PS-10 on a laptop the bubble sits beside the speaking body', async ({ p
   expect((await story(page)).placement).toBe('anchored');
 });
 
-test('TC-PS-11 sound on with no recordings yet: text only, clean console', async ({ page }) => {
+test('TC-PS-11 sound on: the line plays its recording, clean console', async ({ page }) => {
   const problems = collectConsoleProblems(page);
   await bootPage(page, STORY_URL);
   await page.locator('#story-sound').click();
   await seekMet(page, mid('s1-03'));
   const s = await story(page);
   expect(s.narration.enabled).toBe(true);
-  expect(s.narration.available).toBe(false);
+  expect(s.narration.available).toBe(true);
+  expect(s.narration.voice).toBe('recording');
   expect(s.lineId).toBe('s1-03');
   // WebGL driver chatter from SwiftShader is not ours.
   expect(problems.filter((p) => !p.includes('GL Driver') && !p.includes('KHR_parallel'))).toEqual([]);

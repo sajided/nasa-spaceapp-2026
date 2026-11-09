@@ -14,7 +14,8 @@
     "size": "node scripts/size-check.mjs",
     "prepare:engines": "node scripts/prepare-engines.mjs",
     "prepare:textures": "node scripts/prepare-textures.mjs",
-    "prepare:audio": "node scripts/prepare-audio.mjs"
+    "prepare:audio": "node scripts/prepare-audio.mjs",
+    "voices": "node scripts/generate-voices.mjs"
   },
   "dependencies": {
     "animejs": "^4.5.0",

@@ -671,7 +671,7 @@ spec's header).
 | TC-PS-08 | The epilogue shows the real LRO photograph, then the map with every pin lit, then the gift picker; the gift is kept | Yes |
 | TC-PS-09 | Under `prefers-reduced-motion`, no card flight, meter wobble or button pulse | Yes (card flight) |
 | TC-PS-10 | Phone width (390 px): the bubble docks and nothing scrolls sideways; laptop: the bubble sits beside the speaking body | Yes |
-| TC-PS-11 | Sound on with no recordings: every line still reads as text, and the console stays clean | Yes |
+| TC-PS-11 | Sound on: a line plays its recording (unrecorded lines fall back to the browser voice, or text), and the console stays clean | Yes |
 | TC-PS-12 | The start screen starts the story, with or without sound | Yes |
 | TC-PS-13 | Classic mode has no story layer and no story chapters | Yes |
 | TC-PS-14 | The prologue round-trips: the dump and the scale and sky channels are identical after a forward and back pass | Yes |

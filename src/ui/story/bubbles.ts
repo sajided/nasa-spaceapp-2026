@@ -1,3 +1,4 @@
+import { reducedMotion } from '../../core/motion';
 import type { StoryLine } from '../../data/story';
 import { story } from '../../style/tokens';
 import { portraitSvg } from './portraits';
@@ -44,11 +45,16 @@ export interface StoryBubbles {
   active(): string | null;
   /** 'anchored' or 'docked', for the specs. */
   placement(): 'anchored' | 'docked' | 'hidden';
+  /** A little wiggle: "I'm still talking!" when a scroll is held. */
+  nudge(): void;
   dispose(): void;
 }
 
 const BUBBLE_MAX = 440;
-const PORTRAIT = 76;
+/** Largest portrait size, px; it scales down with the viewport (see PORTRAIT_SIZE). */
+const PORTRAIT = 150;
+/** Big enough to read the faces in the artwork, still leaving a phone room for the text. */
+const PORTRAIT_SIZE = `clamp(88px, 13vw, ${PORTRAIT}px)`;
 const MARGIN = 16;
 /** Below this width the bubble always docks. */
 const ANCHOR_MIN_WIDTH = 760;
@@ -72,7 +78,7 @@ export function createStoryBubbles(onReplay: () => void): StoryBubbles {
   const portrait = document.createElement('div');
   portrait.className = 'story-portrait';
   portrait.style.cssText = `
-    flex: 0 0 ${PORTRAIT}px; width: ${PORTRAIT}px; height: ${PORTRAIT}px;
+    flex: 0 0 ${PORTRAIT_SIZE}; width: ${PORTRAIT_SIZE}; height: ${PORTRAIT_SIZE};
     filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
   `;
 
@@ -233,6 +239,18 @@ export function createStoryBubbles(onReplay: () => void): StoryBubbles {
       root.dataset.side = side;
     },
     active: () => shownId,
+    nudge(): void {
+      if (reducedMotion()) return;
+      bubble.animate(
+        [
+          { transform: 'rotate(0deg)' },
+          { transform: 'rotate(-2deg) scale(1.03)' },
+          { transform: 'rotate(2deg) scale(1.03)' },
+          { transform: 'rotate(0deg)' },
+        ],
+        { duration: 360, easing: 'ease-in-out' },
+      );
+    },
     placement: () => mode,
     dispose(): void {
       root.remove();

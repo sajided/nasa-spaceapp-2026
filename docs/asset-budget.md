@@ -15,7 +15,7 @@ Set in Phase 0 so realism cannot quietly consume the total. These are ceilings, 
 | Earth texture | 800 KB | Sized for maximum camera zoom, not larger |
 | Moon texture | 800 KB | As above |
 | Any single GLB | 700 KB | Draco-compressed |
-| Audio | 700 KB | Story-mode voice-over: ~59 lines, AAC mono 32 kbps, one file per line, fetched only as each line plays and only if listed in `public/audio/manifest.json`. Raised from 300 KB for story mode (2026-11-09) |
+| Audio | 700 KB | Story-mode voice-over: ~59 lines, AAC mono 24 kbps, one file per line, fetched only as each line plays and only if listed in `public/audio/manifest.json`. Raised from 300 KB for story mode (2026-11-09) |
 | Story-mode images | 300 KB | The LRO photograph of Tranquility Base, loaded when the epilogue begins |
 | **Total transferred** | **5 MB** | Measured across a full mission scroll with an empty cache |
 
