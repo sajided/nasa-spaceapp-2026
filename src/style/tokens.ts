@@ -67,3 +67,30 @@ export const ui = {
   panelBorder: 'rgba(255, 255, 255, 0.12)',
   accent: '#FF6A1F',
 } as const;
+
+/**
+ * Story mode: a warm storybook layer over the cinematic render. Rounded type
+ * from the system (no web font, so no bytes against the budget), large enough
+ * for six-year-olds — never below 20px for anything a child reads.
+ */
+export const story = {
+  font: "ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', 'Trebuchet MS', system-ui, sans-serif",
+  paper: '#FFF8EC',
+  paperEdge: '#F1DDBB',
+  ink: '#2A2340',
+  inkDim: '#6B6280',
+  earth: '#3C8DDE',
+  earthDeep: '#1E5FA8',
+  moon: '#A9A3BA',
+  moonDeep: '#6F6987',
+  warm: '#FFB547',
+  warmDeep: '#E58A12',
+  go: '#FF6A3D',
+  glass: 'rgba(16, 18, 32, 0.72)',
+  glassBorder: 'rgba(255, 255, 255, 0.18)',
+  shadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
+  /** Body text size, px. */
+  text: 22,
+  /** Minimum touch target, px. */
+  touch: 56,
+} as const;

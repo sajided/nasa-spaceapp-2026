@@ -15,7 +15,7 @@ export const moonwalk: ChapterDef = {
   id: 'moonwalk',
   weight: 5,
   build(ctx) {
-    const { msAt } = ctx;
+    const { tl, effects, msAt } = ctx;
     const between = (a: number, b: number): number => msAt(b) - msAt(a);
     const start = CHAPTER_BOUNDARIES.descentToMoonwalk;
     const H = 3600;
@@ -25,5 +25,12 @@ export const moonwalk: ChapterDef = {
     ctx.cameraTo('surfaceFlag', msAt(110 * H + 1 * 60), between(110 * H + 1 * 60, MET.flag - 120));
     ctx.cameraTo('surfaceEASEP', msAt(110 * H + 40 * 60), between(110 * H + 40 * 60, MET.psep - 60));
     ctx.cameraTo('surfaceEnd', msAt(111 * H + 12 * 60), between(111 * H + 12 * 60, MET.aldrinIn));
+
+    // Story mode: footprints, a flag, gifts left behind — the Moon warms again.
+    tl.add(
+      effects,
+      { moonWarmth: [0.35, 0.7], duration: between(MET.firstStep, MET.lrrr), ease: 'linear' },
+      msAt(MET.firstStep),
+    );
   },
 };

@@ -20,6 +20,12 @@ import type { ChapterAnchor } from '../core/met';
  * `msAt()` guard in core/timeline.ts turns that into a build-time error.
  */
 export const CHAPTER_BOUNDARIES = {
+  /**
+   * Story mode: the prologue (Earth and Moon talking, then the pad before
+   * ignition) hands over to chapter 1 exactly at ignition, so chapter 1's own
+   * first anchor doubles as the boundary.
+   */
+  prologueToLaunch: -8,
   launchToStaging: 155,
   stagingToOrbit: 680,
   orbitToDocking: 10_800,
@@ -166,6 +172,45 @@ export const MET = {
 } as const;
 
 /**
+ * Story-mode time, outside the flight itself.
+ *
+ * The prologue and epilogue are not part of the mission, but every event on
+ * the page is placed by MET, so they get MET of their own: negative before
+ * ignition (the countdown, which the pad naturally owns) and past
+ * `missionEnd` after splashdown. These "story seconds" carry no flight
+ * meaning; they exist so `msAt` and `progressAtMet` can place things.
+ */
+export const STORY_MET = {
+  /** Page top: the Earth and the lonely Moon. */
+  prologueStart: -1200,
+  /** The cut from the Earth–Moon system down to the rocket on the pad. */
+  prologueCut: -420,
+
+  // ── Epilogue, counted on from the capsule afloat ──────────────────────
+  /** Cut back up to the Earth–Moon system. */
+  epilogueStart: MET.missionEnd,
+  /** Arrived at the whole, warm Moon. */
+  moonArrive: MET.missionEnd + 200,
+  /** The landing site begins to glow. */
+  siteGlow: MET.missionEnd + 240,
+  /** Cross-fade to the real LRO photograph, and out again. */
+  lroIn: MET.missionEnd + 340,
+  lroOut: MET.missionEnd + 500,
+  /** The laser from Earth to the retroreflector. */
+  laserIn: MET.missionEnd + 520,
+  laserOut: MET.missionEnd + 700,
+  /** The Resting Places map. */
+  mapIn: MET.missionEnd + 720,
+  mapOut: MET.missionEnd + 900,
+  /** "What would you leave?" */
+  leaveIn: MET.missionEnd + 900,
+  leaveOut: MET.missionEnd + 1060,
+  /** Coming back: the last lines. */
+  finale: MET.missionEnd + 1060,
+  epilogueEnd: MET.missionEnd + 1200,
+} as const;
+
+/**
  * Progress ↔ MET anchors, placed per chapter.
  *
  * Read each row as "this far through this chapter, this much mission time has
@@ -184,6 +229,12 @@ export const MET = {
  * CHAPTER_BOUNDARIES.
  */
 export const MET_ANCHORS: ChapterAnchor[] = [
+  // ── Prologue (story mode) ──────────────────────────────────────────────
+  // Two thirds in the Earth–Moon system for Scene 1, then the pad. Chapter 1's
+  // `at: 0` anchor (ignition) is this chapter's end.
+  { chapter: 'prologue', at: 0, met: STORY_MET.prologueStart },
+  { chapter: 'prologue', at: 0.62, met: STORY_MET.prologueCut },
+
   // ── Chapter 1 ──────────────────────────────────────────────────────────
   { chapter: 'launch', at: 0, met: MET.ignition },
   { chapter: 'launch', at: 0.1, met: MET.liftoff },
@@ -341,13 +392,26 @@ export const MET_ANCHORS: ChapterAnchor[] = [
   { chapter: 'return', at: 0.92, met: MET.mains + 30 },
   { chapter: 'return', at: 0.97, met: MET.splashdown },
   { chapter: 'return', at: 1, met: MET.missionEnd },
+
+  // ── Epilogue (story mode) ──────────────────────────────────────────────
+  // Story seconds, linear: every beat gets scroll in proportion to its span.
+  { chapter: 'epilogue', at: 1, met: STORY_MET.epilogueEnd },
 ];
 
 /**
  * Scroll length of the page in viewport heights. Tuned for pacing in Phase 5.
  *
- * Scaled with the total chapter weight — 3600 for the 30 units of chapters
- * 1–6, so 6480 for all 54 — which keeps every earlier chapter's scroll
- * distance exactly what it was when Phase 2 was signed off.
+ * Scaled with the total chapter weight at 120vh per unit — 3600 for the 30
+ * units of chapters 1–6, 6480 for the 54 of the mission, and 7680 with the
+ * story prologue (4) and epilogue (6) — which keeps every mission chapter's
+ * scroll distance exactly what it was when Phase 2 was signed off.
  */
-export const SCROLL_TRACK_VH = 6480;
+export const SCROLL_TRACK_VH = 7680;
+
+/** Scroll per unit of chapter weight, in viewport heights. */
+export const VH_PER_WEIGHT = 120;
+
+/** Scroll length for a set of chapters: 7680 in story mode, 6480 in classic. */
+export function scrollTrackVh(chapters: readonly { weight: number }[]): number {
+  return VH_PER_WEIGHT * chapters.reduce((sum, c) => sum + c.weight, 0);
+}

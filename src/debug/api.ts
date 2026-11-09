@@ -18,6 +18,7 @@ import type { LoopBundle } from '../core/loop';
 import type { TimelineBundle } from '../core/timeline';
 import type { SlowMoBadge } from '../ui/slowmo';
 import type { CalloutCard } from '../ui/callouts';
+import type { StoryLayer } from '../ui/story/layer';
 import type { LunarSurfaceScene } from '../scene/lunarSurface';
 import type { SurfaceCast } from '../scene/surfaceCast';
 import type { ReentryScene } from '../scene/reentry';
@@ -65,6 +66,8 @@ export interface DebugDeps {
   rig: CameraRig;
   badge: SlowMoBadge | null;
   callouts: CalloutCard;
+  /** Story mode's layer, or null in classic mode. */
+  story: StoryLayer | null;
   surface: LunarSurfaceScene;
   cast: SurfaceCast;
   reentry: ReentryScene;
@@ -82,6 +85,7 @@ export function installDebugAPI({
   rig,
   badge,
   callouts,
+  story,
   surface,
   cast,
   reentry,
@@ -232,6 +236,8 @@ export function installDebugAPI({
     },
 
     getCallout: () => callouts.active(timeline.met.metAt(getProgress())),
+
+    getStory: () => story?.report() ?? null,
 
     getSurface(): SurfaceReport {
       const lm = getBinding('LM');

@@ -652,6 +652,34 @@ Test cases are grouped by development phase (0–6). Each phase's suite must pas
 
 ---
 
+## Story mode — "The Monuments We Left Behind" (TC-PS)
+
+Story mode is the default experience (see the PRD's "Story mode" section); the mission
+cases above run against classic mode, `?story=0`. Automated cases live in
+`tests/e2e/story.spec.ts`; under SwiftShader each seeks once from a fresh load (see the
+spec's header).
+
+| ID | Case | Automated |
+| --- | --- | --- |
+| TC-PS-01 | The page opens in the Earth–Moon system with a cold, grey Moon, no sky, both bodies in view | Yes |
+| TC-PS-02 | Chapter 1 starts exactly as in classic mode: pad viewpoint, metre scale, sky, no stars | Yes |
+| TC-PS-03 | Each scene shows the correct line, speaker and text | Yes (six sampled lines) |
+| TC-PS-04 | Scrolling back swaps the line; between lines the bubble clears | Yes |
+| TC-PS-05 | Separations and surface items are collected; scroll-back keeps them; reload restores them; clearing storage resets | Yes |
+| TC-PS-06 | "Let go!" appears before each monument's separation; tapping it glides through the separation and collects the piece | Yes (S-IC); manual for the rest |
+| TC-PS-07 | The ship's weight falls with a step at every separation; the meter shows on the pad, hides with two ships and at the ends | Yes |
+| TC-PS-08 | The epilogue shows the real LRO photograph, then the map with every pin lit, then the gift picker; the gift is kept | Yes |
+| TC-PS-09 | Under `prefers-reduced-motion`, no card flight, meter wobble or button pulse | Yes (card flight) |
+| TC-PS-10 | Phone width (390 px): the bubble docks and nothing scrolls sideways; laptop: the bubble sits beside the speaking body | Yes |
+| TC-PS-11 | Sound on with no recordings: every line still reads as text, and the console stays clean | Yes |
+| TC-PS-12 | The start screen starts the story, with or without sound | Yes |
+| TC-PS-13 | Classic mode has no story layer and no story chapters | Yes |
+| TC-PS-14 | The prologue round-trips: the dump and the scale and sky channels are identical after a forward and back pass | Yes |
+| TC-PS-15 | `docs/story.md` and `src/data/story.ts` carry the same line ids and text | Yes |
+| TC-PS-16 | With recordings in place, each line plays as it arrives moving forward, stops when it leaves, never auto-plays scrolling back, and auto-advance holds until it ends | Manual (needs recordings) |
+| TC-PS-17 | Read-aloud check with three children aged 6–9: they can follow, they find the album, and they press "Let go!" unprompted | Manual |
+| TC-PS-18 | Fact sign-off: every † item in `docs/story.md` checked against its source | Manual |
+
 ## Cross-cutting regression suite
 
 Run before every phase exit from Phase 2 onward, and before every deploy.

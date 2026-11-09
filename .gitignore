@@ -6,3 +6,6 @@ test-results/
 playwright-report/
 *.local
 .DS_Store
+
+# Raw voice recordings; only the processed public/audio files ship.
+recordings/

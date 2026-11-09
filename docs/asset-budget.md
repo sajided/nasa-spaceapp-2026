@@ -15,7 +15,8 @@ Set in Phase 0 so realism cannot quietly consume the total. These are ceilings, 
 | Earth texture | 800 KB | Sized for maximum camera zoom, not larger |
 | Moon texture | 800 KB | As above |
 | Any single GLB | 700 KB | Draco-compressed |
-| Audio (if shipped) | 300 KB | Mission clips, heavily compressed, lazy-loaded |
+| Audio | 700 KB | Story-mode voice-over: ~59 lines, AAC mono 32 kbps, one file per line, fetched only as each line plays and only if listed in `public/audio/manifest.json`. Raised from 300 KB for story mode (2026-11-09) |
+| Story-mode images | 300 KB | The LRO photograph of Tranquility Base, loaded when the epilogue begins |
 | **Total transferred** | **5 MB** | Measured across a full mission scroll with an empty cache |
 
 ## Measured baseline
@@ -126,3 +127,25 @@ an `InstancedMesh` — 5,958 triangles and one draw call instead of 29,790 acros
 
 **Licensing.** NASA 3D Resources are public domain. The credit line goes on the About
 screen in Phase 6 (TC-P6-23).
+
+## Story mode (2026-11-09)
+
+Story mode adds "The Monuments We Left Behind": the prologue and epilogue chapters and the
+children's HTML layer (`src/ui/story/`). Almost everything it draws is built at load time:
+
+- The Earth and Moon portraits are inline SVG.
+- The Resting Places map is inline SVG.
+- The landing-site glow is a 128² canvas gradient.
+- The laser is a cylinder mesh.
+- No web font is loaded; the rounded type is the system's `ui-rounded`.
+
+| Added | Size | Loaded |
+| --- | --- | --- |
+| Story-layer code (`src/ui/story/`, `src/core/narration.ts`, data) | measure with `npm run size` | with the bundle |
+| `public/images/lro-apollo11.webp` | 14 KB | when the epilogue starts |
+| `public/audio/manifest.json` | < 1 KB | when sound is turned on |
+| Voice recordings | 0 KB so far; ~600 KB expected | one line at a time, while it plays |
+
+The LRO image is "High Noon at Tranquility Base" (LROC NAC, 2009, NASA/GSFC/Arizona State
+University, public domain). It was taken via Wikimedia Commons, because `lroc.asu.edu`'s
+originals are far larger than the page needs.

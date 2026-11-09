@@ -45,6 +45,9 @@ export function createEffectsState(): EffectsState {
     plasma: 0,
     splash: 0,
     splashFlow: 0,
+    moonWarmth: 0,
+    siteGlow: 0,
+    laser: 0,
   };
   current = state;
   return state;

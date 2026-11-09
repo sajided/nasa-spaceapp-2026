@@ -38,6 +38,29 @@ The viewer scrolls, and one camera follows the spacecraft through 10 mission cha
 | Viewers reaching splashdown | 40% or more of those who start scrolling |
 | Lighthouse accessibility score | 90 or higher |
 
+## Story mode (NASA Space Apps, 2026-11)
+
+**Scope change.** For the NASA Space Apps Challenge ("Abandoned but not forgotten"), the
+default experience becomes a children's story, *The Monuments We Left Behind*, aimed at ages 6–9.
+
+- **Narrators.** The Earth and the Moon tell the mission between them. The lonely Moon learns
+  what humans left behind and ends as "a museum of human courage".
+- **Collecting.** Children collect every piece the mission let go of in a Monument Album.
+  They drop each stage themselves with a "Let go!" button, and see where every piece rests
+  today on a map.
+- **Scope of the layer.** It sits on top of the cinematic 3D replay. Two story-only chapters
+  are added: a prologue in the Earth–Moon system and an epilogue at the whole Moon.
+- **Classic mode.** The original 12+ experience remains available as `?story=0`.
+
+| Decision | Choice |
+| --- | --- |
+| Audience | Ages 6–9, voice-first; short lines; touch targets of at least 56 px; text of at least 20 px |
+| Narration | Pre-recorded voices, one file per line, with read-along word highlighting. Text-only until recorded |
+| Devices | Tablet-friendly: big play, previous and next controls drive auto-advance; scroll stays the source of truth |
+| Language | English only; all text is in data files, so translation is additive |
+| Script | `docs/story.md` (line ids shared with the data and the audio files) |
+| Facts | Corrected against NASA sources in the script's Sources section; the about panel labels what is stylised |
+
 ## Target audience
 
 The primary audience is curious general visitors, aged roughly 12 and up, who know Apollo 11 landed on the Moon but not how the mission worked.

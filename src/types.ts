@@ -162,6 +162,17 @@ export interface EffectsState {
   /** Splashdown spray, 0..1, and how far it has flown outward. */
   splash: number;
   splashFlow: number;
+
+  // ── Story mode ──────────────────────────────────────────────────────────
+  /**
+   * The Moon's mood, 0 cold and grey (lonely, Scene 1) to 1 warm (a museum of
+   * human courage, Scene 7). Steps up at the landing and the moonwalk.
+   */
+  moonWarmth: number;
+  /** The glow marking Tranquility Base on the Moon seen from afar, 0..1. */
+  siteGlow: number;
+  /** The laser-ranging beam from Earth to the retroreflector, 0..1. */
+  laser: number;
 }
 
 /**
@@ -378,6 +389,10 @@ export interface ApolloDebugAPI {
    * camera, while the system frame is on screen.
    */
   getBodySizes(): { earth: number; moon: number };
+
+  // ── Story mode ─────────────────────────────────────────────────────────
+  /** The story layer's state — line, album, meter, "Let go!" — or null in classic mode. */
+  getStory(): import('./ui/story/layer').StoryReport | null;
 }
 
 /** What `getReentry()` reports, for the chapter 10 checks. */

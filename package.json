@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Scroll-driven 3D replay of the Apollo 11 mission. Phase 0 \u2014 setup and foundations.",
+  "description": "Scroll-driven 3D replay of the Apollo 11 mission, with the children's story \"The Monuments We Left Behind\".",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -13,7 +13,8 @@
     "test:e2e:ui": "playwright test --ui",
     "size": "node scripts/size-check.mjs",
     "prepare:engines": "node scripts/prepare-engines.mjs",
-    "prepare:textures": "node scripts/prepare-textures.mjs"
+    "prepare:textures": "node scripts/prepare-textures.mjs",
+    "prepare:audio": "node scripts/prepare-audio.mjs"
   },
   "dependencies": {
     "animejs": "^4.5.0",

@@ -335,10 +335,10 @@ test('TC-P3-13 dust particle count follows the quality tier hook', async ({ page
   await bootPage(page);
   const high = (await surface(page)).dustCount;
 
-  await bootPage(page, '/?debug=1&quality=medium');
+  await bootPage(page, '/?debug=1&story=0&quality=medium');
   const medium = (await surface(page)).dustCount;
 
-  await bootPage(page, '/?debug=1&quality=low');
+  await bootPage(page, '/?debug=1&story=0&quality=low');
   const low = (await surface(page)).dustCount;
 
   expect(high).toBeGreaterThan(medium);
