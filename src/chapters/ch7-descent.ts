@@ -186,5 +186,14 @@ export const descent: ChapterDef = {
     // "The Eagle has landed." The camera settles back and holds — the pacing
     // gives the moment room rather than scrolling straight past it (TC-P3-07).
     ctx.cameraTo('landed', msAt(MET.engineStop), between(MET.engineStop, MET.eagleLanded + 40));
+
+    // Story mode: the lonely Moon's first visitors. It warms a step, unseen
+    // here at metre scale, so it is already warmer the next time the whole
+    // Moon is on screen (chapter 10's departure).
+    tl.add(
+      effects,
+      { moonWarmth: [0, 0.35], duration: between(MET.touchdown, MET.eagleLanded), ease: 'linear' },
+      msAt(MET.touchdown),
+    );
   },
 };

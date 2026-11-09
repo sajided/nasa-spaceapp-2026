@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { chapters } from '../../src/chapters/registry';
+// Classic mode: the mission's chapters only (see helpers.ts#PAGE_URL).
+import { missionChapters as chapters } from '../../src/chapters/registry';
 import { bootPage, scrollToProgress } from './helpers';
 
 /**

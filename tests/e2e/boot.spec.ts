@@ -9,21 +9,21 @@ import { bootPage, collectConsoleProblems } from './helpers';
 
 test('TC-P0-01 production preview boots with a clean console', async ({ page }) => {
   const problems = collectConsoleProblems(page);
-  await bootPage(page, `${PREVIEW_URL}/?debug=1`);
+  await bootPage(page, `${PREVIEW_URL}/?debug=1&story=0`);
   expect(problems).toEqual([]);
 });
 
 test('TC-P0-01 dev server boots with a clean console', async ({ page }) => {
   const problems = collectConsoleProblems(page);
-  await bootPage(page, `${DEV_URL}/?debug=1`);
+  await bootPage(page, `${DEV_URL}/?debug=1&story=0`);
   expect(problems).toEqual([]);
 });
 
 test('TC-P0-01 dev and preview render identical scene state', async ({ page }) => {
-  await bootPage(page, `${DEV_URL}/?debug=1`);
+  await bootPage(page, `${DEV_URL}/?debug=1&story=0`);
   const dev = await page.evaluate(() => window.__apollo!.dumpState());
 
-  await bootPage(page, `${PREVIEW_URL}/?debug=1`);
+  await bootPage(page, `${PREVIEW_URL}/?debug=1&story=0`);
   const preview = await page.evaluate(() => window.__apollo!.dumpState());
 
   expect(preview).toEqual(dev);

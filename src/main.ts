@@ -1,5 +1,5 @@
 import { Scene, type DirectionalLight } from 'three';
-import { chapters } from './chapters/registry';
+import { chaptersFor } from './chapters/registry';
 import { createCameraRig } from './core/camera';
 import { applyClipPlanes } from './core/clip';
 import { clearEffectsState, createEffectsState } from './core/effects';
@@ -13,7 +13,7 @@ import { createStage } from './core/stage';
 import { createMasterTimeline } from './core/timeline';
 import { detectQualityTier } from './core/quality';
 import { CALLOUTS } from './data/callouts';
-import { MET_ANCHORS, SCROLL_TRACK_VH } from './data/mission';
+import { MET_ANCHORS, scrollTrackVh } from './data/mission';
 import { SEPARATIONS } from './data/separations';
 import { installDebugAPI } from './debug/api';
 import { createDebugPanel, type DebugPanel } from './debug/panel';
@@ -27,6 +27,8 @@ import { createSurfaceCast } from './scene/surfaceCast';
 import { createSystem } from './scene/system';
 import { createCalloutCard } from './ui/callouts';
 import { createSlowMoBadge } from './ui/slowmo';
+import { readStoryConfig } from './core/storyMode';
+import type { StoryLayer } from './ui/story/layer';
 import type { PartState } from './types';
 
 /**
@@ -42,7 +44,14 @@ async function boot(): Promise<void> {
   const track = document.querySelector<HTMLElement>('#scroll-track');
   if (!canvas || !track) throw new Error('Missing #scene canvas or #scroll-track element');
 
-  track.style.height = `${SCROLL_TRACK_VH}vh`;
+  // Story mode (the default) brackets the mission with the prologue and
+  // epilogue and adds the children's layer; `?story=0` is the classic replay.
+  const storyConfig = readStoryConfig();
+  const chapters = chaptersFor(storyConfig.enabled);
+  const chapterIds = new Set(chapters.map((c) => c.id));
+  const trackVh = scrollTrackVh(chapters);
+  track.style.height = `${trackVh}vh`;
+  document.body.dataset.mode = storyConfig.enabled ? 'story' : 'classic';
 
   const { renderer, camera, dispose: disposeRenderer } = createRenderer(canvas);
   const scene = new Scene();
@@ -50,7 +59,7 @@ async function boot(): Promise<void> {
   createStage(renderer, frames.vehicleFrame, scene);
   const vehicle = createSaturnV(frames.vehicleFrame);
   const pad = createPad(frames.vehicleFrame);
-  const system = createSystem(frames.systemFrame);
+  const system = createSystem(frames.systemFrame, { storyMoon: storyConfig.enabled });
 
   // NASA's F-1, instanced five times in place of the procedural bells. Awaited
   // before the page reports ready so tests and screenshots never race a
@@ -106,6 +115,14 @@ async function boot(): Promise<void> {
   };
   const rig = createCameraRig(camera);
   const effectsState = createEffectsState();
+  if (storyConfig.enabled) {
+    // Story mode opens in the Earth–Moon system (chapters/ch0-prologue.ts).
+    // Set here as well as tweened, because at a cold load to the very top
+    // nothing has rendered yet to put it there.
+    effectsState.vehicleLod = 1;
+    effectsState.stars = 1;
+    effectsState.atmosphere = 0;
+  }
 
   const timeline = createMasterTimeline(
     chapters,
@@ -113,14 +130,28 @@ async function boot(): Promise<void> {
       parts,
       camera: rig.state,
       effects: effectsState,
-      metAnchors: MET_ANCHORS,
-      initialViewpoint: 'pad',
+      metAnchors: MET_ANCHORS.filter((a) => chapterIds.has(a.chapter)),
+      initialViewpoint: storyConfig.enabled ? 'storyOpen' : 'pad',
     },
     '#scroll-track',
   );
 
-  const badge = createSlowMoBadge(separationWindows(SEPARATIONS, timeline.met));
+  const windows = separationWindows(SEPARATIONS, timeline.met);
+  const badge = createSlowMoBadge(windows);
   const callouts = createCalloutCard(CALLOUTS);
+  // Story mode's layer is its own chunk: classic mode never downloads it, and
+  // it keeps the main bundle under the per-asset ceiling.
+  const storyLayer: StoryLayer | null = storyConfig.enabled
+    ? (await import('./ui/story/layer')).createStoryLayer({
+        timeline,
+        camera,
+        windows,
+        sitePosition: system.sitePosition,
+        callouts,
+        trackVh,
+        showStart: storyConfig.showStart,
+      })
+    : null;
   const releaseResize = preserveProgressAcrossResize();
 
   // Declared before the loop so the first animation frame can never observe it
@@ -151,7 +182,9 @@ async function boot(): Promise<void> {
       vehicle.lunarModule.apply(effectsState, surface.flight.altitude);
       cast.apply(met);
       badge.update(progress);
-      callouts.update(met);
+      // In story mode the grown-up callouts sit behind the 🔭 toggle.
+      if (!storyLayer || storyLayer.factsOn()) callouts.update(met);
+      storyLayer?.update(progress, met, frames.isSystem(effectsState.vehicleLod));
       panel?.update();
     },
     afterRender: commitFrame,
@@ -166,6 +199,7 @@ async function boot(): Promise<void> {
     rig,
     badge,
     callouts,
+    story: storyLayer,
     surface,
     cast,
     reentry,
@@ -191,6 +225,7 @@ async function boot(): Promise<void> {
       releaseResize();
       badge.dispose();
       callouts.dispose();
+      storyLayer?.dispose();
       releaseDebugKeys?.();
       timeline.dispose();
       cast.dispose();

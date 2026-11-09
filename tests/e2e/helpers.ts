@@ -4,8 +4,16 @@ import { SEPARATIONS } from '../../src/data/separations';
 import { STAGE_NAMES as VEHICLE_STAGE_NAMES } from '../../src/data/vehicle';
 import type { ApolloDebugAPI, SceneDump } from '../../src/types';
 
-/** Every test loads with the debug API explicitly enabled. */
-export const PAGE_URL = '/?debug=1';
+/**
+ * Every test loads with the debug API explicitly enabled.
+ *
+ * The mission specs run against classic mode (`story=0`): the replay exactly
+ * as Phases 0–4 built it, without story mode's prologue, epilogue and
+ * children's layer. Story mode has its own specs (story.spec.ts and friends),
+ * which use STORY_URL.
+ */
+export const PAGE_URL = '/?debug=1&story=0';
+export const STORY_URL = '/?debug=1';
 
 declare global {
   interface Window {

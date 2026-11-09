@@ -206,6 +206,25 @@ export const VIEWPOINTS: Record<string, Viewpoint> = {
   /** The end: one capsule, afloat. */
   bobbing: { px: 20, py: 116.5, pz: 26, tx: 0, ty: 113.6, tz: 0, fov: 44 },
 
+  // ── Story mode: prologue and epilogue (system frame) ──────────────────
+
+  /**
+   * Scene 1: from just beyond the Moon, looking back at the Earth — the Moon
+   * large and lonely in the foreground, home small and bright behind it.
+   */
+  storyOpen: { px: 392.6, py: 1.4, pz: 4.6, tx: 300, ty: -2, tz: -14, fov: 45 },
+  /** The same, a little closer, as the prologue's dialogue plays. */
+  storyOpenClose: { px: 391.2, py: 1.1, pz: 4.0, tx: 300, ty: -2, tz: -14, fov: 43 },
+
+  /** Scene 7: the whole Moon, its Earth-facing side, Tranquility Base in view. */
+  moonMuseum: { px: 378.6, py: 1.6, pz: 3.4, tx: 384.4, ty: 0, tz: 0, fov: 45 },
+
+  /** Closer on the landing site, for the glow and the real photograph. */
+  siteClose: { px: 380.4, py: 0.7, pz: 2.2, tx: 383.0, ty: 0, tz: 0.6, fov: 40 },
+
+  /** From the side, so the laser from Earth crosses the frame to the site. */
+  laserView: { px: 376, py: 2.4, pz: 9.5, tx: 381, ty: 0, tz: 0.5, fov: 45 },
+
   /** The full vehicle, used by the intro and the exploded view in Phase 5. */
   full: { px: 128, py: VEHICLE_HEIGHT / 2, pz: 158, tx: 0, ty: VEHICLE_HEIGHT / 2, tz: 0, fov: 40 },
 };

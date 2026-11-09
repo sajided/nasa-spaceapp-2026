@@ -1,13 +1,23 @@
-# Apollo 11 — Interactive Journey
+# The Monuments We Left Behind — Apollo 11
 
-A scroll-driven 3D replay of the Apollo 11 mission. See [`apollo-11-prd.md`](apollo-11-prd.md)
-for the product definition and [`testcase.md`](testcase.md) for the test plan.
+An interactive 3D story for children aged 6–9, made for the NASA Space Apps Challenge
+("Abandoned but not forgotten"). The Earth and the Moon follow Apollo 11 and every piece of
+the ship it let go of: the stages in the Atlantic, the S-IVB circling the Sun, the Descent
+Stage still standing at Tranquility Base. Underneath is a scroll-driven, cinematic replay of
+the whole mission.
 
-**Status: Phase 3 built; manual exit checks pending.** The mission runs continuously from
-Pad 39A down to the Sea of Tranquility and through the moonwalk, then back again: eight
-chapters, eight separations, 169 Playwright tests. See
-[`docs/test-runs/phase-3.md`](docs/test-runs/phase-3.md) for the results against
-`testcase.md` and the three checks that need people or real devices.
+- [`docs/story.md`](docs/story.md): the script, fact check and sources.
+- [`apollo-11-prd.md`](apollo-11-prd.md): the product definition (see "Story mode").
+- [`testcase.md`](testcase.md): the test plan.
+
+**Status: Phases 0–4 built, plus story mode.** The full mission runs from Pad 39A to the
+Pacific with all twelve separations. Story mode is the default: the prologue, the epilogue,
+dialogue, the Monument Album, the weight meter, "Let go!" and the playback controls.
+`?story=0` gives the classic replay that the mission specs run against.
+
+Content still to come:
+- Voice recordings. Until they exist, the browser's own text-to-speech reads each line (a different voice for the Earth and the Moon), or the page reads as text where the browser has no English voice.
+- Final fact sign-off. Items are marked † in the script.
 
 ## Running it
 
@@ -19,8 +29,13 @@ npm run preview      # serve the build on :4173
 npm run test:e2e     # builds, then runs the whole suite (~6 min)
 npm run prepare:engines   # re-extract the F-1 engine from NASA's model
 npm run prepare:textures  # re-download and downsize the Earth and Moon maps
+npm run prepare:audio     # recordings/<lineId>.wav → public/audio (needs ffmpeg)
 npm run size         # check dist/ against the budgets in docs/asset-budget.md
 ```
+
+URL switches:
+- `?story=0`: classic mode, the mission replay without the children's layer.
+- `?debug=1`: skips the start screen. Add `&start=1` to bring it back.
 
 Append `?debug=1` to a production build to enable the debug panel and `window.__apollo`.
 Both are stripped from a normal production load. With debug on, **D** logs the RP-4 scene
@@ -62,6 +77,8 @@ re-seeks the linked timeline on every scroll frame and would clobber a direct se
 | `src/scene/` | the Saturn V, the LM, the pad, the F-1 engines, the Earth–Moon system, the lunar surface, the moonwalk cast, the effects |
 | `src/data/` | vehicle dimensions and docking geometry, mission timing, the descent profile, moonwalk routes, callouts, separation specs, viewpoints |
 | `src/ui/` | HTML overlays: the SLOW-MO badge and the callout card |
+| `src/ui/story/` | story mode: speech bubbles and portraits, album, Resting Places map, "Let go!", weight meter, controls, start screen, epilogue beats, about panel |
+| `public/audio/`, `public/images/` | voice-over (with `manifest.json`) and the LRO photograph |
 | `scripts/` | the F-1 extraction pipeline and the size-budget check |
 | `src/style/` | palette tokens and environment lighting |
 | `src/debug/` | debug panel and the `window.__apollo` test API |
@@ -72,12 +89,18 @@ re-seeks the linked timeline on every scroll frame and would clobber a direct se
 
 | Chapter | Covers | Separations |
 | --- | --- | --- |
+| 0 Prologue *(story mode)* | Scene 1: Earth and the lonely Moon; then the pad | — |
 | 1 Launch | T-8 s to T+2:35 | — |
 | 2 Staging | T+2:42 to orbit | S-IC · interstage · escape tower · S-II |
 | 3 Earth orbit and TLI | Parking orbit, the burn for the Moon | — |
 | 4 Transposition and docking | The CSM turns around and extracts the LM | SLA panels · CSM · LM extraction |
 | 5 Translunar coast | Seventy-one hours, three beats | — |
 | 6 Lunar orbit insertion | The braking burn behind the Moon | — |
+| 7 Descent | Undocking to "The Eagle has landed" | LM undock |
+| 8 Moonwalk | Hatch open to hatch closed | — |
+| 9 Ascent | Liftoff, rendezvous, redocking | Descent stage left behind · ascent stage jettison |
+| 10 Return | TEI to splashdown | Service Module · apex cover |
+| 11 Epilogue *(story mode)* | Scene 7: the warm Moon, the real LRO photo, the laser, the map, "what would you leave?" | — |
 
 ### Separations are data, and a part can have more than two homes
 

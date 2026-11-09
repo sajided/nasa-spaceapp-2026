@@ -2,7 +2,9 @@ import {
   AdditiveBlending,
   BackSide,
   BufferGeometry,
+  CanvasTexture,
   Color,
+  CylinderGeometry,
   DirectionalLight,
   Float32BufferAttribute,
   Group,
@@ -14,6 +16,8 @@ import {
   Points,
   PointsMaterial,
   SphereGeometry,
+  Sprite,
+  SpriteMaterial,
   SRGBColorSpace,
   TextureLoader,
   Vector3,
@@ -43,6 +47,8 @@ import type { EffectsState, PartState } from '../types';
 export interface SystemScene {
   /** The marker's state, animated by chapters like any other part. */
   marker: PartState;
+  /** World position of Tranquility Base on the Moon sphere (story mode). */
+  sitePosition: Vector3;
   apply(state: EffectsState, cameraPosition: Vector3, met: number): void;
   /**
    * Resolves once both planet textures have loaded, or failed.
@@ -59,13 +65,57 @@ export interface SystemScene {
 const TRAJECTORY_POINTS = 240;
 const STAR_COUNT = 1400;
 
+/**
+ * Where the landing-site glow sits on the Moon, as a unit direction in the
+ * system frame (story mode).
+ *
+ * Not a selenographic placement: `moon.webp` is a regional photo mosaic
+ * wrapped round the sphere, not a global equirectangular map, so latitude
+ * and longitude would land on nothing in particular. Instead the glow goes
+ * where the story needs it and where the flight had it: on the Earth-facing
+ * side, just inside the morning terminator. Apollo 11 landed with the Sun about
+ * ten degrees up. If a true global map replaces the mosaic, place this from
+ * Tranquility Base's 0.67°N 23.47°E instead.
+ */
+export const SITE_DIRECTION = new Vector3(-0.74, 0.06, 0.67).normalize();
+
+/** A soft round glow, drawn once at boot: no texture asset needed. */
+function glowTexture(): CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const g = canvas.getContext('2d');
+  if (!g) return null;
+  const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, 'rgba(255,248,220,1)');
+  grad.addColorStop(0.18, 'rgba(255,214,140,0.85)');
+  grad.addColorStop(0.5, 'rgba(255,170,80,0.25)');
+  grad.addColorStop(1, 'rgba(255,150,60,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, size, size);
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
 /** Seeded, so the starfield is identical on every load. */
 function seeded(i: number): number {
   const s = Math.sin(i * 78.233) * 43758.5453123;
   return s - Math.floor(s);
 }
 
-export function createSystem(systemFrame: Group): SystemScene {
+export interface SystemOptions {
+  /**
+   * Story mode tints the Moon by its mood (`moonWarmth`). Classic mode leaves
+   * it exactly as Phases 2–4 approved it.
+   */
+  storyMoon?: boolean;
+}
+
+export function createSystem(systemFrame: Group, options: SystemOptions = {}): SystemScene {
+  const storyMoon = options.storyMoon ?? false;
   const geometries: BufferGeometry[] = [];
   const keep = <T extends BufferGeometry>(g: T): T => {
     geometries.push(g);
@@ -127,6 +177,65 @@ export function createSystem(systemFrame: Group): SystemScene {
   moon.name = 'moon';
   moon.position.set(EARTH_MOON_DISTANCE, 0, 0);
   systemFrame.add(moon);
+
+  // ── Story mode: the Moon's mood, Tranquility Base, the laser ───────────
+  // The texture is multiplied by a tint that runs from a cool grey (the
+  // lonely Moon of Scene 1) to a warm cream (Scene 7). Kept subtle: the Moon
+  // still reads as the Moon, only its mood changes.
+  const MOON_COLD = new Color('#b9c0cc');
+  const MOON_WARM = new Color('#fff0d8');
+  const MOON_UNTEXTURED = new Color('#8a8681');
+  let moonTextured = false;
+
+  const glowMap = glowTexture();
+  const siteGlowMaterial = new SpriteMaterial({
+    map: glowMap,
+    color: new Color('#ffd28a'),
+    transparent: true,
+    opacity: 0,
+    blending: AdditiveBlending,
+    depthWrite: false,
+    // Drawn over the sphere it sits on, which would otherwise slice the
+    // sprite's quad in half; `apply` hides it whenever the site faces away.
+    depthTest: false,
+    name: 'landing-site-glow',
+  });
+  const siteGlow = new Sprite(siteGlowMaterial);
+  siteGlow.name = 'landing-site-glow';
+  // A hair above the surface so the sphere never clips the sprite's centre.
+  siteGlow.position.copy(SITE_DIRECTION).multiplyScalar(MOON_RADIUS * 1.01);
+  siteGlow.scale.setScalar(0.32);
+  siteGlow.visible = false;
+  moon.add(siteGlow);
+
+  const sitePosition = new Vector3();
+  moon.updateMatrixWorld(true);
+  siteGlow.getWorldPosition(sitePosition);
+  // Back into system-frame coordinates (the frame sits at the world origin).
+  systemFrame.worldToLocal(sitePosition);
+
+  // Earth to the retroreflector. Lunar laser ranging uses green 532 nm light.
+  // A thin tube rather than a GL line: lines are one pixel wide everywhere,
+  // which is too faint to read as a beam. Thirty kilometres across, so it is
+  // a few pixels wide in the epilogue's shots.
+  const laserFrom = sitePosition.clone().normalize().multiplyScalar(EARTH_RADIUS * 1.02);
+  const laserLength = laserFrom.distanceTo(sitePosition);
+  const laserGeometry = keep(new CylinderGeometry(0.03, 0.03, laserLength, 8, 1, true));
+  const laserMaterial = new MeshBasicMaterial({
+    color: new Color('#5dff8a'),
+    transparent: true,
+    opacity: 0,
+    blending: AdditiveBlending,
+    depthWrite: false,
+    name: 'laser-beam',
+  });
+  const laser = new Mesh(laserGeometry, laserMaterial);
+  laser.name = 'laser-beam';
+  laser.position.copy(laserFrom).add(sitePosition).multiplyScalar(0.5);
+  laser.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), sitePosition.clone().sub(laserFrom).normalize());
+  laser.frustumCulled = false;
+  laser.visible = false;
+  systemFrame.add(laser);
 
   // ── Trajectory ──────────────────────────────────────────────────────────
   // One Line whose draw range is driven from the `trajectory` channel, so it
@@ -241,6 +350,7 @@ export function createSystem(systemFrame: Group): SystemScene {
   systemFrame.add(stars);
 
   const markerWorld = new Vector3();
+  const toCamera = new Vector3();
 
   /**
    * Fraction of the viewport height the marker occupies, whatever the distance.
@@ -288,6 +398,26 @@ export function createSystem(systemFrame: Group): SystemScene {
 
     starMaterial.opacity = state.stars;
     stars.visible = state.stars > 0.01;
+
+    // ── Story mode ────────────────────────────────────────────────────────
+    const warmth = Math.min(Math.max(state.moonWarmth, 0), 1);
+    if (!moonTextured) moonMaterial.color.copy(MOON_UNTEXTURED);
+    else if (storyMoon) moonMaterial.color.copy(MOON_COLD).lerp(MOON_WARM, warmth);
+    else moonMaterial.color.set('#ffffff');
+
+    // Facing the camera, or not drawn at all: with depth testing off it would
+    // otherwise shine through the Moon from the far side.
+    toCamera.copy(cameraPosition).sub(moon.position).normalize();
+    const facing = toCamera.dot(SITE_DIRECTION);
+    siteGlowMaterial.opacity = state.siteGlow * Math.min(1, Math.max(0, facing * 4));
+    siteGlow.visible = state.siteGlow > 0.01 && facing > 0;
+
+    // A slow shimmer along the beam, from mission time so it holds still when
+    // the reader does: well under three pulses a second at any scroll speed a
+    // child can manage, and never a full on/off flash.
+    const shimmer = 0.75 + 0.25 * Math.sin(met * 0.09);
+    laserMaterial.opacity = state.laser * shimmer;
+    laser.visible = state.laser > 0.01;
   };
 
   // ── Textures ────────────────────────────────────────────────────────────
@@ -319,7 +449,8 @@ export function createSystem(systemFrame: Group): SystemScene {
     }
     if (moonMap) {
       moonMaterial.map = moonMap;
-      moonMaterial.color.set('#ffffff');
+      moonMaterial.color.copy(storyMoon ? MOON_COLD : new Color('#ffffff'));
+      moonTextured = true;
       moonMaterial.needsUpdate = true;
     }
     return Boolean(earthMap && moonMap);
@@ -335,9 +466,12 @@ export function createSystem(systemFrame: Group): SystemScene {
     markerMaterial.dispose();
     glowMaterial.dispose();
     starMaterial.dispose();
+    siteGlowMaterial.dispose();
+    glowMap?.dispose();
+    laserMaterial.dispose();
     for (const texture of loadedTextures) texture.dispose();
     systemFrame.clear();
   };
 
-  return { marker, apply, ready, dispose };
+  return { marker, sitePosition, apply, ready, dispose };
 }
