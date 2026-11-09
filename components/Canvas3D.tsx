@@ -639,3 +639,4 @@ export default function Canvas3D({ currentStep }: Canvas3DProps) {
     />
   );
 }
+
