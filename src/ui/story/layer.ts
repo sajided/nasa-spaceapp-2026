@@ -100,7 +100,10 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
   const calloutEl = document.getElementById('callout');
   if (calloutEl) {
     // Out of the way of the docked speech bubble: under the corner buttons.
-    Object.assign(calloutEl.style, { left: 'auto', bottom: 'auto', right: '16px', top: '88px' });
+    // z-index 10 keeps it above the speech bubbles (8) once facts are on.
+    Object.assign(calloutEl.style, {
+      left: 'auto', bottom: 'auto', right: '16px', top: '88px', zIndex: '10',
+    });
   }
 
   const controls = createStoryControls({
@@ -119,6 +122,7 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
       if (!facts) deps.callouts.update(-1e9);
       return facts;
     },
+    factShowingNow: () => deps.callouts.active(lastMet) !== null,
     onAbout: () => about.open(),
   });
 
@@ -145,9 +149,11 @@ export function createStoryLayer(deps: StoryLayerDeps): StoryLayer {
   let lastLineId: string | null = null;
   let lastScene = 1;
   let lastProgress = 0;
+  let lastMet = 0;
 
   return {
     update(progress: number, met: number, systemVisible: boolean): void {
+      lastMet = met;
       const line = storyLineAt(met);
       const scene = storySceneAt(met);
       lastLineId = line?.id ?? null;
