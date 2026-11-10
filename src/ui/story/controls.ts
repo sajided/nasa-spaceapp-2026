@@ -45,6 +45,8 @@ export interface ControlsDeps {
   onToggleSound(): boolean;
   soundOn(): boolean;
   onToggleFacts(): boolean;
+  /** Whether a grown-up fact card has something to show right now. */
+  factShowingNow(): boolean;
   onAbout(): void;
 }
 
@@ -95,10 +97,30 @@ export function createStoryControls(deps: ControlsDeps): StoryControls {
   const facts = roundButton('More facts for grown-ups', '🔭');
   facts.id = 'story-facts';
   facts.setAttribute('aria-pressed', 'false');
+  facts.title = 'More facts for grown-ups';
+  // A short note under the corner buttons, so the toggle never looks dead
+  // when there is no fact for this part of the story.
+  const factsHint = document.createElement('p');
+  factsHint.id = 'story-facts-hint';
+  factsHint.setAttribute('role', 'status');
+  factsHint.style.cssText = `
+    position: fixed; top: ${16 + story.touch + 10}px; right: 16px; z-index: 11; margin: 0;
+    max-width: min(260px, calc(100vw - 32px)); padding: 8px 12px; border-radius: 14px;
+    background: ${story.paper}; border: 2px solid ${story.paperEdge}; color: ${story.ink};
+    font-family: ${story.font}; font-size: 15px; line-height: 1.3; box-shadow: ${story.shadow};
+    opacity: 0; transition: opacity 200ms ease; pointer-events: none;
+  `;
+  let hintTimer = 0;
+  const showHint = (text: string): void => {
+    factsHint.textContent = text;
+    factsHint.style.opacity = '1';
+    window.clearTimeout(hintTimer);
+    hintTimer = window.setTimeout(() => (factsHint.style.opacity = '0'), 3500);
+  };
   const about = roundButton('About this story and NASA sources', 'ⓘ');
   about.id = 'story-about';
   corner.append(sound, facts, about);
-  document.body.append(bar, corner);
+  document.body.append(bar, corner, factsHint);
 
   let isPlaying = false;
   let heldLine: string | null = null;
@@ -156,7 +178,13 @@ export function createStoryControls(deps: ControlsDeps): StoryControls {
     render();
   });
   facts.addEventListener('click', () => {
-    facts.setAttribute('aria-pressed', String(deps.onToggleFacts()));
+    const on = deps.onToggleFacts();
+    facts.setAttribute('aria-pressed', String(on));
+    facts.style.background = on ? story.warm : story.paper;
+    if (!on) showHint('Grown-up facts off.');
+    else if (!deps.factShowingNow()) {
+      showHint('Grown-up facts on! They pop up from the Moon landing onwards.');
+    } else showHint('Grown-up facts on.');
   });
   about.addEventListener('click', () => deps.onAbout());
 
@@ -228,6 +256,8 @@ export function createStoryControls(deps: ControlsDeps): StoryControls {
       window.removeEventListener('keydown', onKey);
       bar.remove();
       corner.remove();
+      window.clearTimeout(hintTimer);
+      factsHint.remove();
     },
   };
 }
