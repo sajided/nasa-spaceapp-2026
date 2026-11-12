@@ -1,7 +1,7 @@
 import { MET, STORY_MET } from './mission';
 
 /**
- * Story mode: "The Monuments We Left Behind".
+ * Story mode: "The Moon Project".
  *
  * The Earth and the Moon talk the reader through the mission. Every line is
  * placed by mission time, exactly like data/callouts.ts, so which line is on

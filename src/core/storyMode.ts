@@ -1,8 +1,8 @@
 /**
  * Story mode or classic mode, decided once from the URL.
  *
- * Story mode is the default: the children's story "The Monuments We Left
- * Behind" — the prologue and epilogue chapters, the Earth and Moon talking,
+ * Story mode is the default: the children's story "The Moon Project" —
+ * the prologue and epilogue chapters, the Earth and Moon talking,
  * the album, the weight meter. `?story=0` is the classic mission replay for
  * older visitors, exactly as Phases 0–4 built it, which is also what the
  * mission specs run against.

@@ -9,6 +9,7 @@ import {
 } from 'three';
 import { createPartState, registerPart } from '../core/reconcile';
 import type { PartState } from '../types';
+import { createPadScenery } from './padScenery';
 
 /**
  * Launch Complex 39A — pad, mobile launcher and service tower.
@@ -27,7 +28,7 @@ export interface PadScene {
 /** How far the pad travels during chapter 1. Stylised, not to scale. */
 export const PAD_TRAVEL = 2600;
 
-export function createPad(vehicleFrame: Group): PadScene {
+export function createPad(vehicleFrame: Group, opts: { story?: boolean } = {}): PadScene {
   const geometries: BufferGeometry[] = [];
   const keep = <T extends BufferGeometry>(g: T): T => {
     geometries.push(g);
@@ -56,6 +57,14 @@ export function createPad(vehicleFrame: Group): PadScene {
   ground.rotation.x = -Math.PI / 2;
   ground.position.y = -16;
   pad.add(ground);
+
+  // Story mode dresses the pad in Cape Kennedy (scene/padScenery.ts) and its
+  // own ground replaces the plain concrete plane. Classic mode is unchanged.
+  const scenery = opts.story ? createPadScenery() : null;
+  if (scenery) {
+    ground.visible = false;
+    pad.add(scenery.group);
+  }
 
   // The mobile launcher platform, built as four slabs around a central
   // opening rather than one solid deck: the exhaust has to have somewhere to
@@ -139,6 +148,7 @@ export function createPad(vehicleFrame: Group): PadScene {
     for (const g of geometries) g.dispose();
     concrete.dispose();
     steel.dispose();
+    scenery?.dispose();
     vehicleFrame.remove(pad);
   };
 

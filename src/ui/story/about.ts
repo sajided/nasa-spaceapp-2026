@@ -38,7 +38,7 @@ export function createAbout(): AboutPanel {
         <h2 id="story-about-title" style="margin:0;font-size:26px;">About this story</h2>
         <button type="button" data-close aria-label="Close" style="width:${story.touch}px;height:${story.touch}px;border-radius:50%;border:3px solid ${story.paperEdge};background:#fff;font-size:24px;cursor:pointer;">✕</button>
       </div>
-      <p><strong>The Monuments We Left Behind</strong> was made for the NASA Space Apps Challenge, “Abandoned but not forgotten”. It follows the real Apollo 11 mission of July 1969, told by the Earth and the Moon.</p>
+      <p><strong>The Moon Project</strong> was made for the NASA Space Apps Challenge, “Abandoned but not forgotten”. It follows the real Apollo 11 mission of July 1969, told by the Earth and the Moon.</p>
       <p><strong>What is real:</strong> the order and timing of every event, what each piece of the ship was, and where it rests today. The photograph of the landing site is a real image taken from lunar orbit. The 📻 radio lines are the real 1969 recordings.</p>
       <p><strong>What is made up:</strong> the Earth and the Moon talking, and their feelings! Their voices are made with AI (ElevenLabs), and the rocket and machine sounds are made up by the computer. The 3D scenes are stylised, distances and sizes between scenes are not to scale, and the glow on the Moon marks the landing site rather than its exact spot. Weights are rounded.</p>
       <h3 style="margin:16px 0 6px;font-size:20px;">Sources</h3>

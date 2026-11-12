@@ -28,6 +28,7 @@ import { createSystem } from './scene/system';
 import { createCalloutCard } from './ui/callouts';
 import { createSlowMoBadge } from './ui/slowmo';
 import { readStoryConfig } from './core/storyMode';
+import { useStoryFraming } from './data/cameras';
 import type { StoryLayer } from './ui/story/layer';
 import type { PartState } from './types';
 
@@ -48,6 +49,7 @@ async function boot(): Promise<void> {
   // epilogue and adds the children's layer; `?story=0` is the classic replay.
   const storyConfig = readStoryConfig();
   const chapters = chaptersFor(storyConfig.enabled);
+  useStoryFraming(storyConfig.enabled);
   const chapterIds = new Set(chapters.map((c) => c.id));
   const trackVh = scrollTrackVh(chapters);
   track.style.height = `${trackVh}vh`;
@@ -58,7 +60,7 @@ async function boot(): Promise<void> {
   const frames = createFrames(scene);
   createStage(renderer, frames.vehicleFrame, scene);
   const vehicle = createSaturnV(frames.vehicleFrame);
-  const pad = createPad(frames.vehicleFrame);
+  const pad = createPad(frames.vehicleFrame, { story: storyConfig.enabled });
   const system = createSystem(frames.systemFrame, { storyMoon: storyConfig.enabled });
 
   // NASA's F-1, instanced five times in place of the procedural bells. Awaited
