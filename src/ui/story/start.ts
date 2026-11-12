@@ -1,7 +1,7 @@
 import { story } from '../../style/tokens';
 
 /**
- * The title screen: "The Monuments We Left Behind".
+ * The title screen: "The Moon Project".
  *
  * Two choices, both big: start with the voices on, or read quietly. The first
  * tap is also what browsers require before any sound may play, so turning the
@@ -26,7 +26,7 @@ export function createStartScreen(onStart: (sound: boolean) => void): StartScree
   root.innerHTML = `
     <div style="max-width: 640px;">
       <p style="margin:0;font-size:18px;font-weight:800;letter-spacing:0.12em;color:${story.warm}">APOLLO 11 · A STORY FROM THE EARTH AND THE MOON</p>
-      <h1 id="story-start-title" style="margin:12px 0 10px;font-size:clamp(34px,7vw,58px);line-height:1.05;">The Monuments<br/>We Left Behind</h1>
+      <h1 id="story-start-title" style="margin:12px 0 10px;font-size:clamp(34px,7vw,58px);line-height:1.05;">The Moon<br/>Project</h1>
       <p style="margin:0 auto 28px;max-width:500px;font-size:21px;line-height:1.4;color:#E8E4F5">
         The Moon is lonely. Then, one day, humans come to visit — and they leave something behind.
       </p>

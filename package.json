@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Scroll-driven 3D replay of the Apollo 11 mission, with the children's story \"The Monuments We Left Behind\".",
+  "description": "Scroll-driven 3D replay of the Apollo 11 mission, with the children's story \"The Moon Project\".",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

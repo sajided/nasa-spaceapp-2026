@@ -1,212 +1,209 @@
-# The Monuments We Left Behind — Apollo 11
+# 🌙 The Moon Project
 
-An interactive 3D story for children aged 6–9, made for the NASA Space Apps Challenge
-("Abandoned but not forgotten"). The Earth and the Moon follow Apollo 11 and every piece of
-the ship it let go of: the stages in the Atlantic, the S-IVB circling the Sun, the Descent
-Stage still standing at Tranquility Base. Underneath is a scroll-driven, cinematic replay of
-the whole mission.
+**An interactive 3D picture book that follows Apollo 11 and every piece of the ship it left behind.**
 
-- [`docs/story.md`](docs/story.md): the script, fact check and sources.
-- [`apollo-11-prd.md`](apollo-11-prd.md): the product definition (see "Story mode").
-- [`testcase.md`](testcase.md): the test plan.
+*NASA International Space Apps Challenge · Challenge: **Abandoned but not Forgotten** · Team **Spaced Outcats** (Sajid, Towsif, Zarin, Siam)*
 
-**Status: Phases 0–4 built, plus story mode.** The full mission runs from Pad 39A to the
-Pacific with all twelve separations. Story mode is the default: the prologue, the epilogue,
-dialogue, the Monument Album, the weight meter, "Let go!" and the playback controls.
-`?story=0` gives the classic replay that the mission specs run against.
+| | |
+| --- | --- |
+| ▶️ **Live demo** | _add deployed URL_ |
+| 🎬 **30-second video** | _add video URL_ (source: `moon-global-film/`) |
+| 🎤 **Pitch film** | _add video URL_ (source: `moon-pitch-film/`) |
+| 🧑‍🚀 **Space Apps project page** | _add project page URL_ |
+| 💻 **Code** | <https://github.com/sajided/nasa-spaceapp-2026> |
 
-Content still to come:
-- Voice recordings. Until they exist, the browser's own text-to-speech reads each line (a different voice for the Earth and the Moon), or the page reads as text where the browser has no English voice.
-- Final fact sign-off. Items are marked † in the script.
+---
 
-## Running it
+## The problem
 
-```bash
-npm install
-npm run dev          # http://localhost:5173 — debug panel on by default
-npm run build        # typecheck + production build
-npm run preview      # serve the build on :4173
-npm run test:e2e     # builds, then runs the whole suite (~6 min)
-npm run prepare:engines   # re-extract the F-1 engine from NASA's model
-npm run prepare:textures  # re-download and downsize the Earth and Moon maps
-npm run prepare:audio     # recordings/<lineId>.wav → public/audio (needs ffmpeg)
-npm run size         # check dist/ against the budgets in docs/asset-budget.md
-```
+To reach the Moon, Apollo 11 had to **let go of almost everything it launched with**. Of a
+2,938-tonne rocket, only the 5-tonne Command Module *Columbia* came home. The rest is still out
+there: three stages on the floor of the Atlantic, a third stage circling the Sun, a lander standing
+at Tranquility Base, a mirror that scientists still bounce lasers off today.
 
-URL switches:
-- `?story=0`: classic mode, the mission replay without the children's layer.
-- `?debug=1`: skips the start screen. Add `&start=1` to bring it back.
+These are humanity's first monuments on another world, and most children have never heard of
+them. They know the rocket and the footprint. They don't know about the machines that made the
+trip possible and were left behind.
 
-Append `?debug=1` to a production build to enable the debug panel and `window.__apollo`.
-Both are stripped from a normal production load. With debug on, **D** logs the RP-4 scene
-dump to the console, and `?quality=low|medium|high` sets the particle tier (a stub until
-Phase 6 detects it).
+## Our solution
 
-> **npm cache note.** `~/.npm/_cacache` on this machine contains root-owned entries that
-> make `npm install` fail with EACCES. `.npmrc` points npm at a project-local cache to work
-> around it. To fix it properly: `sudo chown -R 501:20 "$HOME/.npm"`, then delete `.npmrc`.
+**The Moon Project** is a scroll-driven 3D story for children aged 6–9, narrated by two friendly
+characters: **the Earth** and **a lonely Moon**. They watch Apollo 11 make its journey and talk
+about each piece as it falls away.
+
+Children don't just watch. They **take part**:
+
+- 🔘 **"Let go!":** the child presses the button that drops each stage, and feels the rocket get lighter.
+- ⚖️ **The weight meter:** the ship's real mass in tonnes, and in elephants, falls from 2,938 t to 5 t.
+- 📒 **The Monument Album:** 14 collectible cards, one for each piece left behind, saying what it did and where it rests today.
+- 🗺️ **Resting Places map:** the Atlantic, the Pacific, orbit around the Sun, and the Moon's surface.
+- 📻 **Real 1969 voices:** at liftoff, landing and the first step the story steps aside and NASA's original recordings play, with word-by-word captions.
+- 📷 **The real photograph:** at the end the cartoon Moon fades into a real Lunar Reconnaissance Orbiter photo of the Apollo 11 site. Everything the child just collected is really there.
+- 💭 **"What would you leave?":** the story ends by asking the child what they would leave on the Moon.
+
+Older visitors and teachers can switch to the **classic mission replay** (`?story=0`): the
+whole flight from Pad 39A to Pacific splashdown, timed to the real mission clock, with all twelve
+separations.
+
+## Why it fits "Abandoned but not Forgotten"
+
+| The challenge asks | The Moon Project |
+| --- | --- |
+| Tell the story of hardware left behind | Every jettisoned part is a character beat and a collectible card, from the S-IC in the Atlantic to the descent stage on the Moon |
+| Use NASA data | Mission timing, masses, 3D models, imagery, photography and audio all come from NASA sources (listed below) |
+| Make it engaging and accessible | Ages 6–9, narrated, big tap targets for tablets, text never below 20 px, works without sound, keyboard and screen-reader friendly |
+| Show why it still matters | The **"Not forgotten!"** line on each card: the F-1 engines raised from the sea in 2013, the retroreflector still used for laser ranging, the descent stage still standing |
+
+## The fourteen monuments
+
+| Card | Left at | Rests today |
+| --- | --- | --- |
+| First Stage (S-IC) | T+ 2:42 | Atlantic Ocean. Its F-1 engines were recovered in 2013 |
+| Interstage ring | T+ 3:12 | Atlantic Ocean |
+| Launch Escape System | T+ 3:18 | Atlantic Ocean. It was never needed |
+| Second Stage (S-II) | T+ 9:09 | Atlantic Ocean |
+| Third Stage (S-IVB) | T+ 4:17:03 | Orbit around the Sun |
+| Flag | Moonwalk | Moon surface. The ascent blast knocked it over |
+| Retroreflector (LRRR) | Moonwalk | Moon surface. It is still used for laser ranging |
+| Seismometer (PSEP) | Moonwalk | Moon surface. It sent the first moonquake reports |
+| Footprints | Moonwalk | Moon surface |
+| Plaque & goodwill disk | Moonwalk | Moon surface, with messages from 73 countries |
+| Descent Stage | T+ 124:22 | Tranquility Base |
+| Ascent Stage | T+ 130:09:31 | Unknown. It may still be in lunar orbit (Meador, 2021) |
+| Service Module | T+ 194:49:12 | Burned up in Earth's atmosphere |
+| Command Module *Columbia* | Splashdown | Smithsonian National Air and Space Museum |
+
+---
+
+## 🛰️ NASA data and resources used
+
+Every NASA asset the app ships was downloaded and processed by a script in `scripts/`, so it can
+be rebuilt from the original source.
+
+### Imagery and 3D models
+
+| Resource | What we used | Where it appears | How |
+| --- | --- | --- | --- |
+| [NASA 3D Resources](https://github.com/nasa/NASA-3D-Resources) | **Earth (A)** equirectangular map | The Earth in every space scene | `scripts/prepare-textures.mjs` downsizes it to `public/textures/earth.webp` |
+| [NASA 3D Resources](https://github.com/nasa/NASA-3D-Resources) | **Moon – Lunar Color** map | The Moon, from the prologue to the epilogue | `scripts/prepare-textures.mjs` → `public/textures/moon.webp` |
+| [NASA 3D Resources: Saturn V](https://science.nasa.gov/3d-resources/saturn-v/) ([GLB](https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/model/saturn-v/Saturn%20V.glb)) | One **F-1 engine** mesh, instanced five times | The S-IC engines at liftoff | `scripts/prepare-engines.mjs` extracts it → `public/models/f1-engine.glb` |
+| [LROC: "High Noon at Tranquility Base"](https://www.lroc.asu.edu/images/65) (NASA/GSFC/Arizona State University, also [NASA Photojournal PIA12925](https://photojournal.jpl.nasa.gov/catalog/PIA12925)) | LRO Narrow Angle Camera photo of the Apollo 11 site | The epilogue reveal | `public/images/lro-apollo11.webp` |
+
+### Mission audio
+
+From [NASA Historical Sounds](https://www.nasa.gov/historical-sounds/). The script
+`scripts/prepare-mission-audio.mjs` cuts each clip and times its caption word by word.
+
+| Recording | Moment |
+| --- | --- |
+| [Apollo 11 countdown & liftoff](https://www.nasa.gov/wp-content/uploads/2015/01/590320main_ringtone_apollo11_countdown.mp3) (Jack King, NASA Launch Control) | "Ignition sequence start… Liftoff! We have a liftoff…" |
+| [The Eagle Has Landed (extended)](https://www.nasa.gov/wp-content/uploads/2015/01/590333main_ringtone_eagleHasLanded_extended.mp3) | Touchdown at Tranquility Base |
+| [That's one small step](https://www.nasa.gov/wp-content/uploads/2015/01/590331main_ringtone_smallStep.mp3) | Neil Armstrong's first step |
+
+### Mission data and fact-checking
+
+| Source | Used for |
+| --- | --- |
+| [Apollo 11 Flight Journal](https://www.nasa.gov/history/afj/ap11fj/) (NASA History) | The mission clock: every event in `src/data/mission.ts` is placed by real Mission Elapsed Time |
+| [Apollo 11 Lunar Surface Journal](https://www.nasa.gov/history/alsj/a11/a11.html) (NASA History) | The moonwalk: the flag, LRRR, PSEP, the plaque and the goodwill disk |
+| [Saturn V Launch Vehicle Flight Evaluation Report AS-506](https://ibiblio.org/apollo/Documents/lvfea-AS506-Apollo11.pdf) (MSFC, MPR-SAT-FE-69-9) | Stage masses and separation times for the weight meter (`src/data/mass.ts`) |
+| [Lunar Reconnaissance Orbiter Camera](https://www.lroc.asu.edu/) | Where the hardware rests today |
+| J. Meador, "Long-term orbit stability of the Apollo 11 'Eagle' lunar module ascent stage", *Planetary and Space Science*, 2021 | The ascent stage's "still in orbit?" card |
+
+The full script, the line-by-line fact check and the corrections made to the first draft are in
+[`docs/story.md`](docs/story.md).
+
+### What is real, and what is made up
+
+We tell children this on the in-app **About** screen, and we hold ourselves to it:
+
+- **Real:** the order and timing of every event, what each piece of the ship was, where it rests
+  today, the masses (rounded), the LRO photograph and the 📻 radio voices.
+- **Made up:** the Earth and the Moon talking, and their feelings. Their voices are AI-generated
+  (ElevenLabs) and the rocket sounds are synthesized. The 3D scenes are stylised and not to
+  scale between scenes.
+
+NASA imagery and audio are public domain. NASA does not endorse this project.
+
+---
 
 ## How it works
 
 ```
-scroll / slider  ──▶  master timeline  ──▶  state objects  ──▶  reconciler  ──▶  Three.js
-                      (anime.js)            (plain JS)          (idempotent)
+scroll / swipe / ▶  ──▶  master timeline  ──▶  state objects  ──▶  reconciler  ──▶  Three.js
+                         (anime.js, MET)       (plain JS)          (idempotent)
 ```
 
-**Scene state is a pure function of timeline progress.** anime.js animates plain JS state
-objects, never Three.js objects. Once a frame, the reconciler (`src/core/reconcile.ts`)
-reads those objects and makes the scene match: it decides parenting by comparing desired
-against current, and rewrites each transform wholesale from data.
+- **Mission time is the unit.** Events are placed by real Mission Elapsed Time, and the scroll is
+  stretched around separations and compressed elsewhere. Six seconds of S-IC separation get 4% of
+  the page; seventy-one hours of coast get 13%.
+- **The scene is a pure function of progress.** anime.js animates plain state, and a reconciler
+  makes the Three.js scene match each frame. Scrolling backwards through a separation re-attaches
+  the stage exactly. Nothing depends on "this event fired".
+- **Separations are data.** All twelve run through one function (`src/core/separation.ts`) from
+  rows in `src/data/separations.ts`.
+- **Two scales, one camera.** The 110 m rocket and the 384,400 km Earth–Moon trip share one depth
+  range: the system frame is in units of 1,000 km. The cut between them happens when the rocket is
+  about twenty pixels tall, so it is invisible.
+- **Light enough for a school tablet.** One NASA F-1 mesh, two 2048 px textures and procedural
+  geometry for everything else. The launch peaks well under a 150-draw-call ceiling, checked by
+  the test suite.
 
-Nothing is driven by "this event fired" — which is the point. The PRD's biggest risk is
-reverse scrolling through separations, and a callback that calls `scene.attach()` once
-going forward and never un-fires strands a stage at the scene root. Deriving the scene
-from progress instead means the same progress gives the same scene whether it was reached
-by slow scroll, flick-scroll, the debug slider or a test seek.
+**Stack:** TypeScript · [Three.js](https://threejs.org/) · [anime.js](https://animejs.com/) ·
+[Vite](https://vite.dev/) · [Playwright](https://playwright.dev/) for 22 end-to-end spec files.
 
-Scroll is the single source of truth. The debug slider and `__apollo.seek()` set *scroll
-position* and let the value flow back through the same path, because the scroll observer
-re-seeks the linked timeline on every scroll frame and would clobber a direct seek anyway.
+## Run it
 
-## Layout
+```bash
+npm install
+npm run dev               # http://localhost:5173
+npm run build             # typecheck + production build
+npm run preview           # serve the build on :4173
+npm run test:e2e          # build, then run the Playwright suite
+npm run size              # check dist/ against docs/asset-budget.md
+```
+
+Rebuild the NASA assets from source:
+
+```bash
+npm run prepare:textures        # NASA 3D Resources → Earth and Moon textures
+npm run prepare:engines         # NASA Saturn V model → one F-1 engine
+npm run prepare:mission-audio   # NASA Historical Sounds → captioned clips (needs ffmpeg)
+```
+
+URL switches:
+
+- `?story=0`: the classic mission replay for older visitors.
+- `?debug=1`: the debug panel and the `window.__apollo` test API. It skips the start screen; add `&start=1` to bring it back.
+
+## Project layout
 
 | Path | What |
 | --- | --- |
-| `src/core/` | renderer, stage, render loop, timeline, progress, reconciler, clip planes, quality tier |
-| `src/chapters/` | one module per chapter plus the ordered registry |
-| `src/scene/` | the Saturn V, the LM, the pad, the F-1 engines, the Earth–Moon system, the lunar surface, the moonwalk cast, the effects |
-| `src/data/` | vehicle dimensions and docking geometry, mission timing, the descent profile, moonwalk routes, callouts, separation specs, viewpoints |
-| `src/ui/` | HTML overlays: the SLOW-MO badge and the callout card |
-| `src/ui/story/` | story mode: speech bubbles and portraits, album, Resting Places map, "Let go!", weight meter, controls, start screen, epilogue beats, about panel |
-| `public/audio/`, `public/images/` | voice-over (with `manifest.json`) and the LRO photograph |
-| `scripts/` | the F-1 extraction pipeline and the size-budget check |
-| `src/style/` | palette tokens and environment lighting |
-| `src/debug/` | debug panel and the `window.__apollo` test API |
-| `tests/e2e/` | Playwright specs, named for the `testcase.md` cases they cover |
-| `docs/` | visual style decision, asset budget and baselines |
+| `src/chapters/` | One module per chapter, from the prologue to the epilogue |
+| `src/scene/` | The Saturn V, the Lunar Module, the pad and Cape Kennedy, the Earth–Moon system, the lunar surface, re-entry |
+| `src/data/` | Mission timing, masses, separations, the descent profile, moonwalk routes, the story script, camera viewpoints |
+| `src/ui/story/` | Speech bubbles, the album, the map, "Let go!", the weight meter, controls, the start screen and the About screen |
+| `scripts/` | The NASA asset pipelines, voice generation and the size check |
+| `tests/e2e/` | Playwright specs, named after the cases in `testcase.md` |
+| `docs/` | The story script and fact check, visual style, asset budget |
 
-## What is built
+More detail: [`apollo-11-prd.md`](apollo-11-prd.md) (product definition),
+[`testcase.md`](testcase.md) (test plan), [`docs/story.md`](docs/story.md) (script and sources).
 
-| Chapter | Covers | Separations |
-| --- | --- | --- |
-| 0 Prologue *(story mode)* | Scene 1: Earth and the lonely Moon; then the pad | — |
-| 1 Launch | T-8 s to T+2:35 | — |
-| 2 Staging | T+2:42 to orbit | S-IC · interstage · escape tower · S-II |
-| 3 Earth orbit and TLI | Parking orbit, the burn for the Moon | — |
-| 4 Transposition and docking | The CSM turns around and extracts the LM | SLA panels · CSM · LM extraction |
-| 5 Translunar coast | Seventy-one hours, three beats | — |
-| 6 Lunar orbit insertion | The braking burn behind the Moon | — |
-| 7 Descent | Undocking to "The Eagle has landed" | LM undock |
-| 8 Moonwalk | Hatch open to hatch closed | — |
-| 9 Ascent | Liftoff, rendezvous, redocking | Descent stage left behind · ascent stage jettison |
-| 10 Return | TEI to splashdown | Service Module · apex cover |
-| 11 Epilogue *(story mode)* | Scene 7: the warm Moon, the real LRO photo, the laser, the map, "what would you leave?" | — |
+## What's next
 
-### Separations are data, and a part can have more than two homes
+- **Mars:** the same story for the hardware left on Mars, including landers, heat shields, parachutes and retired rovers.
+- **More languages**, recorded by native speakers.
+- **Classroom mode:** a teacher's guide and printable album cards.
+- **Real-device performance** passes on low-end school tablets.
 
-All seven run through one function (`src/core/separation.ts`); the rows in
-`src/data/separations.ts` are what differ. Nothing fires a callback: a separation is a
-tween on a plain `attachment` index, and the reconciler turns its crossing into a
-re-parent by comparing the parent a part wants against the one it has.
+## Credits
 
-A part carries an **ordered list** of places it can live, not a home and an away. That is
-what lets the Lunar Module be extracted *into the CSM* rather than adrift — a destination
-that is neither of the two a boolean could express — and it is what Phase 4's ascent
-stage, which docks and is then jettisoned, will need.
+Team **Spaced Outcats**: Sajid, Towsif, Zarin, Siam.
 
-### Two scales, one depth range
+NASA imagery, 3D models and audio: public domain, credited above. LRO image: NASA/GSFC/Arizona
+State University. Character voices: ElevenLabs. Film credits: `moon-global-film/CREDITS` and
+`moon-pitch-film/CREDITS`.
 
-The vehicle is 110 m; the Earth–Moon distance is 384,400 km. Rather than a logarithmic
-depth buffer or a second render pass, the system frame is measured in units of 1,000 km,
-which puts both frames inside `near 0.05 / far 3000`:
-
-```
-              vehicle frame (metres)     system frame (1,000 km)
-  subject     110-unit stack             Earth r 6.371, Moon r 1.737
-  camera      50–4,000 units             10–900 units
-```
-
-Only one frame is visible at a time, so they cannot interpenetrate. The switch is a hard
-cut taken where the stack is about twenty pixels tall and the marker is sized to match —
-the marker is scaled from camera distance so it holds a constant screen size, which is
-what makes the cut invisible.
-
-**The floating origin now has a stated boundary.** The vehicle holds the origin in the
-vehicle frame, where every separation happens; in the system frame, where none do, the
-marker moves along a fixed trajectory and the bodies stay put. `lod.spec.ts` asserts that
-every one of the seven separations happens at vehicle scale.
-
-### Mission time is the unit
-
-Events place themselves by MET (`src/data/mission.ts`), and a piecewise map stretches
-scroll around separations and compresses it everywhere else. The extremes are worth
-seeing together: six seconds of S-IC separation take 4% of the page, and the seventy-one
-hours of translunar coast take 13%. That ratio is what the SLOW-MO badge announces.
-
-## Verification
-
-127 assertions across 17 spec files, about three and a half minutes.
-
-Phase 0 and Phase 1 cases run as regression, retargeted where Phase 2 legitimately
-changed the answer — jettisoned parts now report `vehicle-frame` rather than the scene
-root, progress 1 is lunar orbit rather than orbital insertion, and the adapter panels
-start on the SLA rather than the stack.
-
-| Case | Covered by |
-| --- | --- |
-| TC-P2-01 Earth sphere and texture | `system.spec.ts` — textures load before ready, no failed requests |
-| TC-P2-02 Parking orbit | `system.spec.ts` — altitude constant, path curves rather than drifting |
-| TC-P2-03 TLI burn | `system.spec.ts` — engine cold, lit, then out; reverses correctly |
-| TC-P2-04 SEP-5 adapter panels | `separations.spec.ts` — four named panels, RP-1 each, reverse closes them |
-| TC-P2-05 SEP-6 CSM turnaround | `separations.spec.ts` — modules share the CSM parent, rotation reverses |
-| TC-P2-07 SEP-7 LM extraction | `separations.spec.ts` — the LM's parent goes `stack` → `CSM` and back |
-| TC-P2-08 Trajectory line | `lod.spec.ts` — the marker advances monotonically toward the Moon |
-| TC-P2-09 Coast pacing | the coast is the shortest of the six chapters by weight |
-| TC-P2-10 Moon and LOI | `system.spec.ts` — closed orbit above the surface, burn fires |
-| TC-P2-12 Full-range continuity | `reattach.spec.ts` — full reverse restores the dump exactly |
-| TC-P2-13 Scale transitions | `lod.spec.ts` — never both frames, switches where intended, separations always at vehicle scale |
-| TC-P2-14 Performance | `launch-perf.spec.ts` — 61 draw calls peak against a 150 ceiling |
-
-## Five things later phases should not rediscover
-
-**anime.js composition will silently freeze a part.** Its default `composition: 'replace'`
-means creating a second animation on the same property of the same target cancels the
-first. Chapters are separate nested timelines animating shared state objects, so the
-default makes an earlier chapter's tween die the moment a later chapter touches the same
-property — the part freezes at a stale value while everything around it keeps moving, and
-which value you get depends on the route taken. `composition: 'none'` in the shared tween
-defaults (`src/core/timeline.ts`) is what prevents it. This cost half a day to find.
-
-**Every tween declares an explicit `[from, to]` pair.** A tween that omits its start value
-resolves it at *build* time, and a chapter cannot see where the previous chapter left a
-value. Stating both ends keeps a chapter's output dependent only on its own local progress.
-For the camera, `ctx.cameraTo()` threads the `from` through for you.
-
-**A chapter boundary must be an exact fraction, not a decimal.** Chapter bounds come from
-integer weights, so a boundary at 10/30 is not 0.333 — and an anchor written as the
-decimal lands a fraction of a millisecond on the wrong side, where the guard below
-correctly rejects it.
-
-**A shared object animated by more than one chapter is a bug waiting to happen.** Three
-chapters wanted to move the spacecraft marker, and a chapter's tweens write their *start*
-value whenever that chapter renders at its own time zero — so once the viewer had reached
-lunar orbit, scrolling back to the pad left the marker parked at the Moon. Anything that
-spans chapters should be derived from progress in one place, the way
-`data/orbits.ts#spacecraftAt` is, not tweened in several.
-
-**An event must not straddle a chapter boundary.** A tween placed outside its own chapter
-gets a negative position, which anime accepts — and then renders *partially advanced*
-whenever that chapter sits at its own time zero. The symptom is a value that is correct on
-first arrival and subtly wrong on every revisit, which reads like a determinism bug in the
-reconciler rather than a chapter reaching past its slot. `msAt()` in
-`src/core/timeline.ts` now throws instead, and the chapter's built duration is checked
-against its allotted duration.
-
-## Open questions still outstanding
-
-From the PRD: mission audio in v1 or later; target languages; hosting and domain. Visual
-style is settled — see `docs/visual-style.md`.
-
-Still outstanding, and now the most valuable thing to do: **real-hardware frame rates**.
-The suite runs under software WebGL and cannot speak to the PRD's 60 fps laptop / 30 fps
-phone targets. Procedure RP-3 on real devices, recorded in `docs/asset-budget.md`.
+*Made for the NASA International Space Apps Challenge. Not endorsed by NASA.*

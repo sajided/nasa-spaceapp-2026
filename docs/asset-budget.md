@@ -130,7 +130,7 @@ screen in Phase 6 (TC-P6-23).
 
 ## Story mode (2026-11-09)
 
-Story mode adds "The Monuments We Left Behind": the prologue and epilogue chapters and the
+Story mode adds "The Moon Project": the prologue and epilogue chapters and the
 children's HTML layer (`src/ui/story/`). Almost everything it draws is built at load time:
 
 - The Earth and Moon portraits are inline SVG.

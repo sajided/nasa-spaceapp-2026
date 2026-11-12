@@ -652,7 +652,7 @@ Test cases are grouped by development phase (0–6). Each phase's suite must pas
 
 ---
 
-## Story mode — "The Monuments We Left Behind" (TC-PS)
+## Story mode — "The Moon Project" (TC-PS)
 
 Story mode is the default experience (see the PRD's "Story mode" section); the mission
 cases above run against classic mode, `?story=0`. Automated cases live in

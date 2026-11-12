@@ -8,7 +8,7 @@ import { STORY_LINES } from '../../src/data/story';
 import { STORY_URL, bootPage, collectConsoleProblems, settle } from './helpers';
 
 /**
- * Story mode — "The Monuments We Left Behind" (TC-PS-xx in testcase.md).
+ * Story mode — "The Moon Project" (TC-PS-xx in testcase.md).
  *
  * Each test seeks once from a fresh load. Under SwiftShader the lunar surface
  * renders at about one frame a second, and anime's scroll sync does not keep
