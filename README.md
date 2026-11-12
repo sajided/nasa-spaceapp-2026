@@ -198,6 +198,7 @@ URL switches:
 | `scripts/` | The NASA asset pipelines, voice generation and the size check |
 | `tests/e2e/` | Playwright specs, named after the cases in `testcase.md` |
 | `docs/` | The story script and fact check, visual style, asset budget |
+| `prototype/` | Our first prototype, *The Monuments We Left Behind* (Next.js), kept with its history |
 
 More detail: [`apollo-11-prd.md`](apollo-11-prd.md) (product definition),
 [`testcase.md`](testcase.md) (test plan), [`docs/story.md`](docs/story.md) (script and sources).
