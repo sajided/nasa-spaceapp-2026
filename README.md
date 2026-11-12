@@ -45,6 +45,17 @@ Older visitors and teachers can switch to the **classic mission replay** (`?stor
 whole flight from Pad 39A to Pacific splashdown, timed to the real mission clock, with all twelve
 separations.
 
+## Screenshots
+
+| | |
+| :---: | :---: |
+| <img src="docs/screenshots/01-prologue.jpg" alt="The lonely Moon talks to the Earth in the prologue" width="420"> | <img src="docs/screenshots/02-liftoff.jpg" alt="Liftoff at Cape Kennedy with the real 1969 Launch Control audio and captions" width="420"> |
+| **The lonely Moon** meets the Earth | **Liftoff**, with the real 1969 Launch Control audio |
+| <img src="docs/screenshots/03-let-go.jpg" alt="The child presses Let go of the Second Stage while the weight meter falls" width="420"> | <img src="docs/screenshots/04-album.jpg" alt="The Monument Album with the Resting Places map and cards" width="420"> |
+| **"Let go!"**: the child drops each stage | **The Monument Album** and Resting Places map |
+| <img src="docs/screenshots/05-first-step.jpg" alt="Neil Armstrong steps off the Lunar Module with the real radio audio" width="420"> | <img src="docs/screenshots/06-moonwalk.jpg" alt="The moonwalk: flag, retroreflector, seismometer and footprints left behind" width="420"> |
+| **"One small step"**, in Armstrong's own voice | **The moonwalk**: what they left on the surface |
+
 ## Why it fits "Abandoned but not Forgotten"
 
 | The challenge asks | The Moon Project |
