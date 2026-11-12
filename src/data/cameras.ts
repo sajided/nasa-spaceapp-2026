@@ -229,8 +229,59 @@ export const VIEWPOINTS: Record<string, Viewpoint> = {
   full: { px: 128, py: VEHICLE_HEIGHT / 2, pz: 158, tx: 0, ty: VEHICLE_HEIGHT / 2, tz: 0, fov: 40 },
 };
 
+/**
+ * Story mode keeps the bottom third of the screen for the speech bubble and the
+ * play controls, so a shot framed for the whole screen loses its lower part
+ * behind them — and the separation shots, framed on the joint, already let the
+ * top of the stack (the spacecraft, the bit the story is about) run off the top
+ * edge. In story mode these keys are re-framed to hold a height range of the
+ * stack inside the band the story leaves clear.
+ */
+const STORY_SAFE = { bottom: -0.3, top: 0.9 } as const;
+
+/**
+ * A viewpoint that keeps `base`'s compass direction and field of view but
+ * stands back and level so world heights `yLo..yHi` on the vehicle axis span
+ * the story's clear band of the screen.
+ */
+export function storyFrame(base: Viewpoint, yLo: number, yHi: number, fov = base.fov): Viewpoint {
+  const ndcSpan = STORY_SAFE.top - STORY_SAFE.bottom;
+  const halfHeight = (yHi - yLo) / ndcSpan; // world half-height of the whole screen
+  const centre = yLo - STORY_SAFE.bottom * halfHeight;
+  const distance = halfHeight / Math.tan(((fov / 2) * Math.PI) / 180);
+  const az = Math.atan2(base.pz - base.tz, base.px - base.tx);
+  return {
+    px: base.tx + Math.cos(az) * distance,
+    py: centre,
+    pz: base.tz + Math.sin(az) * distance,
+    tx: base.tx,
+    ty: centre,
+    tz: base.tz,
+    fov,
+  };
+}
+
+/** Story-mode replacements, by key. Classic mode never sees these. */
+export const STORY_VIEWPOINTS: Record<string, Viewpoint> = {
+  // Liftoff and the climb: the whole rocket, nose to flame.
+  liftoff: storyFrame(VIEWPOINTS.liftoff!, -12, VEHICLE_HEIGHT + 2),
+  ascent: storyFrame(VIEWPOINTS.ascent!, -8, VEHICLE_HEIGHT + 2),
+  // Separations: the stack that flies on, plus room below for the piece
+  // falling away while it is still close.
+  sepSIC: storyFrame(VIEWPOINTS.sepSIC!, -6, VEHICLE_HEIGHT + 2),
+  sepInterstage: storyFrame(VIEWPOINTS.sepInterstage!, 18, VEHICLE_HEIGHT + 2),
+  sepSII: storyFrame(VIEWPOINTS.sepSII!, 32, VEHICLE_HEIGHT + 2),
+};
+
+let storyFraming = false;
+
+/** Called once at boot, before the timeline is built. */
+export function useStoryFraming(enabled: boolean): void {
+  storyFraming = enabled;
+}
+
 export function viewpoint(key: string): Viewpoint {
-  const vp = VIEWPOINTS[key];
+  const vp = (storyFraming ? STORY_VIEWPOINTS[key] : undefined) ?? VIEWPOINTS[key];
   if (!vp) {
     throw new Error(`Unknown viewpoint '${key}'. Known: ${Object.keys(VIEWPOINTS).join(', ')}`);
   }

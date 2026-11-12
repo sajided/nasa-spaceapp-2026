@@ -134,11 +134,30 @@ export function createCameraRig(camera: PerspectiveCamera): CameraRig {
     camera.up.set(Math.sin(state.roll), Math.cos(state.roll), 0);
     camera.lookAt(target);
 
-    if (camera.fov !== state.fov) {
-      camera.fov = state.fov;
+    const fov = fitFov(state.fov, camera.aspect);
+    if (camera.fov !== fov) {
+      camera.fov = fov;
       camera.updateProjectionMatrix();
     }
   };
 
   return { state, apply, position, target };
+}
+
+/**
+ * Viewpoints are authored for a 16:10 screen. On anything narrower — a tablet
+ * held upright, a phone — a fixed vertical field of view crops the sides, and
+ * a craft framed off-centre (the marker circling the Earth, the spacecraft
+ * coasting to the Moon) slides out of shot. Below the authored aspect the
+ * vertical field of view opens up to keep the authored horizontal one, up to a
+ * cap past which perspective would distort more than the crop costs.
+ */
+const AUTHORED_ASPECT = 1.6;
+const MAX_FOV = 80;
+
+export function fitFov(fov: number, aspect: number): number {
+  if (!(aspect > 0) || aspect >= AUTHORED_ASPECT) return fov;
+  const half = (fov * Math.PI) / 360;
+  const widened = (Math.atan((Math.tan(half) * AUTHORED_ASPECT) / aspect) * 360) / Math.PI;
+  return Math.min(Math.max(fov, MAX_FOV), widened);
 }

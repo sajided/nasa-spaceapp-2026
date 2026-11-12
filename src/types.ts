@@ -370,6 +370,8 @@ export interface ApolloDebugAPI {
   getSeparationWindow(): string | null;
   /** True if the named part is currently inside the camera frustum. */
   isInView(name: string): boolean;
+  /** A part's visible bounds in NDC, and the fraction of it inside the viewport. */
+  screenRect(name: string): { min: [number, number]; max: [number, number]; onScreen: number; behind: boolean } | null;
 
   // ── Phase 3 ────────────────────────────────────────────────────────────
   /** Id of the callout card on screen (1202 alarm, fuel calls…), or null. */

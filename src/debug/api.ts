@@ -174,6 +174,33 @@ export function installDebugAPI({
       return frustum.intersectsBox(box);
     },
 
+    /**
+     * Where a part lands on screen: its visible bounds projected to NDC
+     * (-1..1 is on screen), and how much of that rectangle is inside the
+     * viewport. Used to sweep the flight for a craft framed out of shot.
+     */
+    screenRect(name: string): { min: [number, number]; max: [number, number]; onScreen: number; behind: boolean } | null {
+      const binding = getBinding(name);
+      if (!binding || !isDrawn(binding.object)) return null;
+      visibleBounds(binding.object, box);
+      if (box.isEmpty()) return null;
+      camera.updateMatrixWorld();
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      let behind = false;
+      for (let i = 0; i < 8; i++) {
+        worldPos.set(i & 1 ? box.max.x : box.min.x, i & 2 ? box.max.y : box.min.y, i & 4 ? box.max.z : box.min.z);
+        worldPos.applyMatrix4(camera.matrixWorldInverse);
+        if (worldPos.z > -camera.near) behind = true;
+        worldPos.applyMatrix4(camera.projectionMatrix);
+        x0 = Math.min(x0, worldPos.x); x1 = Math.max(x1, worldPos.x);
+        y0 = Math.min(y0, worldPos.y); y1 = Math.max(y1, worldPos.y);
+      }
+      const area = Math.max(1e-9, (x1 - x0) * (y1 - y0));
+      const ix = Math.max(0, Math.min(1, x1) - Math.max(-1, x0));
+      const iy = Math.max(0, Math.min(1, y1) - Math.max(-1, y0));
+      return { min: [round(x0), round(y0)], max: [round(x1), round(y1)], onScreen: behind ? 0 : round((ix * iy) / area), behind };
+    },
+
     getEffects(): EffectsState {
       const state = getEffectsState();
       if (!state) throw new Error('Effects state not initialised');
