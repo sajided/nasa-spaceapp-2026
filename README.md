@@ -2,7 +2,7 @@
 
 **An interactive 3D picture book that follows Apollo 11 and every piece of the ship it left behind.**
 
-*NASA International Space Apps Challenge · Challenge: **Abandoned but not Forgotten** · Team **Spaced Outcats** (Sajid, Towsif, Zarin, Siam)*
+*NASA International Space Apps Challenge · Challenge: **Abandoned but not Forgotten** · Team **Spaced Outcats***
 
 | | |
 | --- | --- |
@@ -200,7 +200,7 @@ More detail: [`apollo-11-prd.md`](apollo-11-prd.md) (product definition),
 
 ## Credits
 
-Team **Spaced Outcats**: Sajid, Towsif, Zarin, Siam.
+Team **Spaced Outcats**.
 
 NASA imagery, 3D models and audio: public domain, credited above. LRO image: NASA/GSFC/Arizona
 State University. Character voices: ElevenLabs. Film credits: `moon-global-film/CREDITS` and
