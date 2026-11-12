@@ -6,10 +6,10 @@
 
 | | |
 | --- | --- |
-| ▶️ **Live demo** | _add deployed URL_ |
-| 🎬 **30-second video** | _add video URL_ (source: `moon-global-film/`) |
-| 🎤 **Pitch film** | _add video URL_ (source: `moon-pitch-film/`) |
-| 🧑‍🚀 **Space Apps project page** | _add project page URL_ |
+| ▶️ **Live demo** | <https://the-moon-project-steel.vercel.app/> |
+| 🎬 **30-second video** (global judging) | <https://youtu.be/WLAF4dQr1Pc> (source: `moon-global-film/`) |
+| 🎤 **Pitch film** (local judging) | <https://youtu.be/nwNQ9yOKnEs> (source: `moon-pitch-film/`) |
+| 🧑‍🚀 **Space Apps project page** | <https://www.spaceappschallenge.org/2026/find-a-team/spaced-out-cats/> |
 | 💻 **Code** | <https://github.com/sajided/nasa-spaceapp-2026> |
 
 ---
